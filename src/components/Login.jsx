@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Login.css';
 
-const Login = ({ onLogin }) => {
+const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,7 +15,7 @@ const Login = ({ onLogin }) => {
     }
     setError('');
     // Simulate login
-    if (onLogin) onLogin(email, password);
+    if (onLoginSuccess) onLoginSuccess();
   };
 
   return (
