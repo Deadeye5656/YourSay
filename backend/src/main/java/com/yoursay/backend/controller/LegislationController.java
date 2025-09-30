@@ -1,5 +1,6 @@
 package com.yoursay.backend.controller;
 
+import com.yoursay.backend.domain.UserRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class LegislationController {
 
     // 2. Add new user
     @PostMapping("/users")
-    public ResponseEntity<String> addUser(@RequestBody Map<String, Object> user) {
+    public ResponseEntity<String> addUser(@RequestBody UserRequest user) {
         // Placeholder logic
         return ResponseEntity.ok("User added.");
     }
@@ -71,4 +72,3 @@ public class LegislationController {
         return ResponseEntity.ok("Random legislation fetched.");
     }
 }
-
