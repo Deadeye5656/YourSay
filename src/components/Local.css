@@ -1,3 +1,38 @@
+/* Add New Legislation Button Theme Style */
+.add-legislation-btn {
+  background: linear-gradient(90deg, #1a237e 0%, #3949ab 100%);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.7rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 8px rgba(30, 30, 60, 0.08);
+  transition: background 0.2s, color 0.2s;
+}
+.add-legislation-btn:hover {
+  background: #ffca28;
+  color: #1a237e;
+}
+/* Style for the no-legislation-prompt */
+.no-legislation-prompt {
+  background: #fffbe6;
+  border: 2px solid #ffd700;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.no-legislation-prompt p {
+  color: #222;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin: 0;
+}
 .details-btn {
   background: #f5a623;
   color: #fff;
