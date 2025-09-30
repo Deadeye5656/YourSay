@@ -104,7 +104,7 @@ const Signup = ({ onSignup }) => {
               value={email}
               onChange={e => setEmail(e.target.value)}
             />
-            <button type="submit">Sign Up</button>
+            <button type="submit" className="submit-button">Sign Up</button>
           </>
         )}
         {step === 2 && (
@@ -121,7 +121,7 @@ const Signup = ({ onSignup }) => {
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
             />
-            <button type="submit">Next</button>
+            <button type="submit" className="submit-button">Next</button>
           </>
         )}
         {step === 3 && (
@@ -134,7 +134,7 @@ const Signup = ({ onSignup }) => {
               onChange={e => setZip(e.target.value.replace(/[^0-9]/g, ''))}
               style={{marginBottom: '1rem'}}
             />
-            <button type="submit">Next</button>
+            <button type="submit" className="submit-button">Next</button>
           </>
         )}
         {step === 4 && (
@@ -159,7 +159,7 @@ const Signup = ({ onSignup }) => {
                 ))}
               </div>
             </div>
-            <button type="submit">Create Account</button>
+            <button type="submit" className="submit-button">Create Account</button>
           </>
         )}
         </form>

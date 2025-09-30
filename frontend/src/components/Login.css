@@ -44,7 +44,7 @@
   box-shadow: 0 0 0 2px rgba(57, 73, 171, 0.1);
 }
 
-.login-form button {
+.login-form .submit-button {
   background: #3949ab;
   color: #fff;
   border: none;
@@ -57,12 +57,9 @@
   min-width: 200px;
 }
 
-.login-form button:hover {
+.login-form .submit-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(57, 73, 171, 0.2);
-}
-
-.login-form button:hover {
   background: #1a237e;
 }
 
@@ -85,21 +82,25 @@
 
 .topics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
   justify-content: center;
-  padding: 0 1rem;
+  padding: 0.5rem;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .topic-button {
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   border-radius: 20px;
-  border: 2px solid #ccc;
-  background: #f5f5f5;
-  color: #333;
+  border: 2px solid #3949ab;
+  background: white;
+  color: #3949ab;
   cursor: pointer;
   font-weight: normal;
   transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
 }
 
 .topic-button.selected {
