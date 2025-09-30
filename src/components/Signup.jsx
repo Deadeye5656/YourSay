@@ -85,13 +85,37 @@ const Signup = ({ onSignup }) => {
   };
 
   return (
-    <div className="login-page">
-      <form className="login-form" onSubmit={
-        step === 1 ? handleEmailSubmit :
-        step === 2 ? handlePasswordSubmit :
-        step === 3 ? handleZipSubmit :
-        handleTopicsSubmit
-      }>
+    <div className="login-page" style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 'calc(100vh - 64px)',
+      padding: '2rem',
+      background: '#f5f6fa'
+    }}>
+      <div style={{
+        background: '#fff',
+        padding: '3rem',
+        borderRadius: '16px',
+        boxShadow: '0 8px 32px rgba(30, 30, 60, 0.16)',
+        width: '100%',
+        maxWidth: '500px'
+      }}>
+        <form 
+          style={{
+            width: '100%',
+            margin: 0,
+            padding: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }} 
+          onSubmit={
+            step === 1 ? handleEmailSubmit :
+            step === 2 ? handlePasswordSubmit :
+            step === 3 ? handleZipSubmit :
+            handleTopicsSubmit
+          }
         <h2>Sign Up</h2>
         {error && <div className="error">{error}</div>}
         {step === 1 && (
@@ -169,7 +193,8 @@ const Signup = ({ onSignup }) => {
             <button type="submit">Create Account</button>
           </>
         )}
-      </form>
+        </form>
+      </div>
     </div>
   );
 };
