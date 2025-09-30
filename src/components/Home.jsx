@@ -66,13 +66,39 @@ const Home = () => {
   return (
     <div className="home">
       <header className="home__header">
-        <h1>Welcome to YourSay</h1>
-        <p>
-          YourSay is the platform for sharing your political opinions and staying informed about upcoming legislation in your local town halls, state legislatures, and federal congress.
-        </p>
+        <div className="header-content">
+          <h1>
+            <span className="welcome-text">Welcome to </span>
+            <span className="brand-text">
+              <span className="your-text">Your</span>
+              <span className="say-text">Say</span>
+            </span>
+          </h1>
+          <p className="hero-text">
+            Your voice matters. Be part of the conversation.
+          </p>
+          <p className="sub-text">
+            Stay informed about upcoming legislation and share your opinions on bills at all levels - 
+            from your local town halls to state legislatures and federal congress.
+          </p>
+          <div className="stat-cards">
+            <div className="stat-card">
+              <span className="stat-number">50+</span>
+              <span className="stat-label">Active Bills</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-number">10k+</span>
+              <span className="stat-label">Citizens Engaged</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-number">3</span>
+              <span className="stat-label">Government Levels</span>
+            </div>
+          </div>
+        </div>
       </header>
       <section className="home__legislation">
-        <h2>Upcoming Legislation</h2>
+        <h2><span className="section-title">Upcoming Legislation</span></h2>
         <div className="carousel">
           <Slider {...settings}>
             {legislationCards.map((card, idx) => (

@@ -2,34 +2,130 @@
 @import url('slick-carousel/slick/slick.css');
 @import url('slick-carousel/slick/slick-theme.css');
 .home {
-  padding: 2rem;
-  background: #f5f6fa;
+  background: linear-gradient(135deg, #f5f6fa 0%, #e8eaf6 100%);
+  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 64px);
 }
 
 .home__header {
   text-align: center;
-  margin-bottom: 2rem;
+  padding: 4rem 2rem;
+  background: linear-gradient(180deg, #1a237e 0%, #3949ab 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-.home__header h1 {
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.welcome-text {
   font-size: 2.5rem;
-  color: #3949ab;
+  font-weight: 300;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.brand-text {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  display: block;
+}
+
+.your-text {
+  background: linear-gradient(135deg, #fff 0%, #e3f2fd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style: italic;
+}
+
+.say-text {
+  color: #ffca28;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  margin-left: 8px;
+}
+
+.hero-text {
+  font-size: 1.8rem;
+  font-weight: 300;
+  margin: 1.5rem 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.sub-text {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+.stat-cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  min-width: 180px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.stat-number {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffca28;
   margin-bottom: 0.5rem;
 }
 
-.home__header p {
-  font-size: 1.2rem;
-  color: #333;
+.stat-label {
+  display: block;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
 }
 
 .home__legislation {
-  margin-top: 2rem;
+  padding: 4rem 2rem;
 }
 
-.home__legislation h2 {
+.section-title {
   color: #1a237e;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: inline-block;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #1a237e, #3949ab, transparent);
 }
 
 

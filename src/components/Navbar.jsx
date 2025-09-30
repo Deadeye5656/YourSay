@@ -4,7 +4,11 @@ import './Navbar.css';
 const Navbar = ({ onLogin, onSignup, onLogout, isAuthenticated, onNavigate }) => {
   return (
     <nav className="navbar">
-      <div className="navbar__logo">YourSay</div>
+      <div className="navbar__logo">
+        <span className="logo-your">Your</span>
+        <span className="logo-say">Say</span>
+        <div className="logo-underline"></div>
+      </div>
       <div className="navbar__navlinks">
         <button className="navbar__navbtn" onClick={() => onNavigate('/')}>Home</button>
         <button className="navbar__navbtn" onClick={() => onNavigate('/local')}>Local</button>
