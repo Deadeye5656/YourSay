@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Modal from './Modal';
 import './State.css';
 
 const stateLegislation = [
@@ -21,6 +22,8 @@ const filterOptions = ['All', 'Upcoming', 'Past'];
 const State = () => {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(null);
 
   const filteredLegislation = stateLegislation.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) || item.summary.toLowerCase().includes(search.toLowerCase());
@@ -51,10 +54,23 @@ const State = () => {
             <p><strong>Summary:</strong> {item.summary}</p>
             <p><strong>Details:</strong> {item.details}</p>
             <div className="card-actions">
-              <button className="view-btn">View Legislation</button>
+              <button className="view-btn" onClick={() => { setModalData(item); setModalOpen(true); }}>View Legislation</button>
             </div>
           </div>
         ))}
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+          {modalData && (
+            <div>
+              <div className="modal-header">
+                <h2>{modalData.title}</h2>
+                <button className="modal-close" onClick={() => setModalOpen(false)}>&times;</button>
+              </div>
+              <p><strong>Date:</strong> {modalData.date}</p>
+              <p><strong>Summary:</strong> {modalData.summary}</p>
+              <p><strong>Details:</strong> {modalData.details}</p>
+            </div>
+          )}
+        </Modal>
       </div>
     </div>
   );

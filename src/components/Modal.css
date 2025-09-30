@@ -1,0 +1,76 @@
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.modal-header .modal-close {
+  position: static;
+  font-size: 2rem;
+  margin-left: 1.5rem;
+  color: #3949ab;
+  background: none;
+  border: none;
+  cursor: pointer;
+  align-self: flex-start;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  min-width: 320px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(30,30,60,0.16);
+  position: relative;
+    color: #222;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 1.08rem;
+    line-height: 1.7;
+  }
+
+  .modal-content h2, .modal-content h3 {
+    color: #2a3d7c;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .modal-content p {
+    margin: 0.7rem 0;
+    color: #222;
+  }
+
+  .modal-content strong {
+    color: #3949ab;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #3949ab;
+  cursor: pointer;
+}
