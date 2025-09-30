@@ -70,7 +70,8 @@ const VerifyCode = ({ onVerifySuccess }) => {
                 borderRadius: '8px',
                 outline: 'none',
                 background: '#f9f9f9',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                color: '#000'
               }}
               autoFocus={idx === 0}
             />

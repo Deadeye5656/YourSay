@@ -6,6 +6,9 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import VerifyCode from './components/VerifyCode';
+import Local from './components/Local';
+import State from './components/State';
+import Federal from './components/Federal';
 import React, { useState } from 'react';
 
 function App() {
@@ -37,52 +40,47 @@ function App() {
         onSignup={handleSignup}
         onLogout={handleLogout}
         isAuthenticated={isAuthenticated}
+        onNavigate={navigate}
       />
-      <div className="tabs-bar">
-        <button className="tab" onClick={() => navigate('/')}>Home</button>
-        <button className="tab" onClick={() => navigate('/local')}>Local</button>
-        <button className="tab" onClick={() => navigate('/state')}>State</button>
-        <button className="tab" onClick={() => navigate('/federal')}>Federal</button>
-      </div>
+        {/* Development-only button to toggle login state */}
+        <div style={{ position: 'fixed', top: 10, right: 10, zIndex: 9999 }}>
+          <button
+            onClick={() => setIsAuthenticated((prev) => !prev)}
+            style={{ padding: '0.5rem 1rem', background: '#007bff', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
+          >
+            {isAuthenticated ? 'Set Logged Out' : 'Set Logged In'} (Dev)
+          </button>
+        </div>
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/local" element={
             isAuthenticated ? (
-              <div style={{padding: '2rem'}}>
-                <h2>Local Legislation</h2>
-                <p>Scroll through upcoming local town hall legislation here.</p>
-              </div>
+              <Local />
             ) : (
               <div style={{padding: '2rem', textAlign: 'center', background: '#222', borderRadius: '12px', color: '#fff', margin: '2rem auto', maxWidth: '500px', boxShadow: '0 2px 12px rgba(0,0,0,0.15)'}}>
                 <h2 style={{color:'#fff'}}>Local Legislation</h2>
-                <p>You must <span style={{color:'#00bfff', fontWeight:'bold'}}>sign up</span> to see upcoming legislation in your area.</p>
+                <p>You must <button style={{color:'#00bfff', background:'none', border:'none', cursor:'pointer', textDecoration:'underline', fontSize:'inherit', fontWeight:'inherit', padding:0}} onClick={handleSignup}>sign up</button> to see upcoming legislation in your area.</p>
               </div>
             )
           } />
           <Route path="/state" element={
             isAuthenticated ? (
-              <div style={{padding: '2rem'}}>
-                <h2>State Legislation</h2>
-                <p>Scroll through upcoming state legislature bills here.</p>
-              </div>
+              <State />
             ) : (
               <div style={{padding: '2rem', textAlign: 'center', background: '#222', borderRadius: '12px', color: '#fff', margin: '2rem auto', maxWidth: '500px', boxShadow: '0 2px 12px rgba(0,0,0,0.15)'}}>
                 <h2 style={{color:'#fff'}}>State Legislation</h2>
-                <p>You must <span style={{color:'#00bfff', fontWeight:'bold'}}>sign up</span> to see upcoming legislation in your area.</p>
+                <p>You must <button style={{color:'#00bfff', background:'none', border:'none', cursor:'pointer', textDecoration:'underline', fontSize:'inherit', fontWeight:'inherit', padding:0}} onClick={handleSignup}>sign up</button> to see upcoming legislation in your area.</p>
               </div>
             )
           } />
           <Route path="/federal" element={
             isAuthenticated ? (
-              <div style={{padding: '2rem'}}>
-                <h2>Federal Legislation</h2>
-                <p>Scroll through upcoming federal congress bills here.</p>
-              </div>
+              <Federal />
             ) : (
               <div style={{padding: '2rem', textAlign: 'center', background: '#222', borderRadius: '12px', color: '#fff', margin: '2rem auto', maxWidth: '500px', boxShadow: '0 2px 12px rgba(0,0,0,0.15)'}}>
                 <h2 style={{color:'#fff'}}>Federal Legislation</h2>
-                <p>You must <span style={{color:'#00bfff', fontWeight:'bold'}}>sign up</span> to see upcoming legislation in your area.</p>
+                <p>You must <button style={{color:'#00bfff', background:'none', border:'none', cursor:'pointer', textDecoration:'underline', fontSize:'inherit', fontWeight:'inherit', padding:0}} onClick={handleSignup}>sign up</button> to see upcoming legislation in your area.</p>
               </div>
             )
           } />

@@ -1,10 +1,16 @@
 import React from 'react';
 import './Navbar.css';
 
-const Navbar = ({ onLogin, onSignup, onLogout, isAuthenticated }) => {
+const Navbar = ({ onLogin, onSignup, onLogout, isAuthenticated, onNavigate }) => {
   return (
     <nav className="navbar">
       <div className="navbar__logo">YourSay</div>
+      <div className="navbar__navlinks">
+        <button className="navbar__navbtn" onClick={() => onNavigate('/')}>Home</button>
+        <button className="navbar__navbtn" onClick={() => onNavigate('/local')}>Local</button>
+        <button className="navbar__navbtn" onClick={() => onNavigate('/state')}>State</button>
+        <button className="navbar__navbtn" onClick={() => onNavigate('/federal')}>Federal</button>
+      </div>
       <div className="navbar__auth">
         {!isAuthenticated && (
           <>

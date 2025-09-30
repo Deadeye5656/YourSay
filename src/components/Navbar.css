@@ -37,6 +37,27 @@
   gap: 1rem;
 }
 
+.navbar__navlinks {
+  display: flex;
+  gap: 1.5rem;
+  margin-right: 2rem;
+}
+.navbar__navbtn {
+  background: transparent;
+  color: #fff;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  transition: background 0.2s, color 0.2s;
+}
+.navbar__navbtn:hover {
+  background: #ffca28;
+  color: #1a237e;
+}
+
 .navbar__btn {
   background: #fff;
   color: #3949ab;

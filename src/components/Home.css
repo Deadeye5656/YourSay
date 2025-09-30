@@ -106,7 +106,6 @@
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
-
 .legislation-card button:hover {
   background: #3949ab;
   color: #fff;
