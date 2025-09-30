@@ -85,37 +85,15 @@ const Signup = ({ onSignup }) => {
   };
 
   return (
-    <div className="login-page" style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: 'calc(100vh - 64px)',
-      padding: '2rem',
-      background: '#f5f6fa'
-    }}>
-      <div style={{
-        background: '#fff',
-        padding: '3rem',
-        borderRadius: '16px',
-        boxShadow: '0 8px 32px rgba(30, 30, 60, 0.16)',
-        width: '100%',
-        maxWidth: '500px'
-      }}>
-        <form 
-          style={{
-            width: '100%',
-            margin: 0,
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-          }} 
+    <div className="login-page">
+      <form className="login-form"
           onSubmit={
             step === 1 ? handleEmailSubmit :
             step === 2 ? handlePasswordSubmit :
             step === 3 ? handleZipSubmit :
             handleTopicsSubmit
           }
+          >
         <h2>Sign Up</h2>
         {error && <div className="error">{error}</div>}
         {step === 1 && (
@@ -162,28 +140,19 @@ const Signup = ({ onSignup }) => {
         {step === 4 && (
           <>
             {selectedTopics.length === 5 && (
-              <div style={{ color: 'red', marginBottom: '1rem', textAlign: 'center' }}>
+              <div className="error">
                 You can't choose more than 5 topics of interest.
               </div>
             )}
-            <div style={{marginBottom: '1rem'}}>
-              <div style={{marginBottom: '0.5rem'}}>Select the political topics most important to you:</div>
-              <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center'}}>
+            <div className="topics-section">
+              <p>Select the political topics most important to you:</p>
+              <div className="topics-grid">
                 {topicsList.map(topic => (
                   <button
                     type="button"
                     key={topic}
                     onClick={() => toggleTopic(topic)}
-                    style={{
-                      padding: '0.5rem 1rem',
-                      borderRadius: '20px',
-                      border: selectedTopics.includes(topic) ? '2px solid #0077ff' : '2px solid #ccc',
-                      background: selectedTopics.includes(topic) ? '#0077ff' : '#f5f5f5',
-                      color: selectedTopics.includes(topic) ? '#fff' : '#333',
-                      cursor: 'pointer',
-                      fontWeight: selectedTopics.includes(topic) ? 'bold' : 'normal',
-                      width: '145px'
-                    }}
+                    className={`topic-button ${selectedTopics.includes(topic) ? 'selected' : ''}`}
                   >
                     {topic}
                   </button>
@@ -194,7 +163,6 @@ const Signup = ({ onSignup }) => {
           </>
         )}
         </form>
-      </div>
     </div>
   );
 };
