@@ -1,13 +1,22 @@
 package com.yoursay.backend.controller;
 
 import com.yoursay.backend.domain.UserRequest;
+import com.yoursay.backend.service.SignUpService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class LegislationController {
+    private final SignUpService signUpService;
+
+    @Autowired
+    public LegislationController(SignUpService signUpService) {
+        this.signUpService = signUpService;
+    }
 
     // 1. Daily legislation data fetch
     @GetMapping("/legislation/daily-fetch")
@@ -18,8 +27,11 @@ public class LegislationController {
 
     // 2. Add new user
     @PostMapping("/users")
-    public ResponseEntity<String> addUser(@RequestBody UserRequest user) {
-        // Placeholder logic
+    public ResponseEntity<String> verifyAndAddUser(@RequestBody UserRequest user) {
+        if (!signUpService.checkVerificationCode(user.getEmail(), user.getVerificationCode())) {
+            return ResponseEntity.status(403).body("Invalid verification code.");
+        }
+        signUpService.addUserFromRequest(user);
         return ResponseEntity.ok("User added.");
     }
 
