@@ -26,6 +26,8 @@ const State = () => {
   const [modalData, setModalData] = useState(null);
   const [opinionMode, setOpinionMode] = useState(false);
   const [opinionText, setOpinionText] = useState('');
+  const [voting, setVoting] = useState(false);
+  const [vote, setVote] = useState(null);
 
   const filteredLegislation = stateLegislation.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) || item.summary.toLowerCase().includes(search.toLowerCase());
@@ -65,17 +67,35 @@ const State = () => {
             <div>
               <div className="modal-header">
                 <h2>{modalData.title}</h2>
-                <button className="modal-close" onClick={() => { setModalOpen(false); setOpinionMode(false); setOpinionText(''); }}>&times;</button>
+                <button className="modal-close" onClick={() => { setModalOpen(false); setVoting(false); setVote(null); setOpinionMode(false); setOpinionText(''); }}>&times;</button>
               </div>
               <p><strong>Date:</strong> {modalData.date}</p>
               <p><strong>Summary:</strong> {modalData.summary}</p>
               <p><strong>Details:</strong> {modalData.details}</p>
-              {!opinionMode ? (
+              {!voting && !opinionMode ? (
                 <div className="modal-actions">
-                  <button className="vote-btn" onClick={() => alert('Vote feature coming soon!')}>Vote</button>
+                  <button className="vote-btn" onClick={() => setVoting(true)}>Vote</button>
                   <button className="opinion-btn" onClick={() => setOpinionMode(true)}>Submit Opinion</button>
                 </div>
               ) : null}
+              {voting && !opinionMode && (
+                <>
+                  <div className="vote-choices">
+                    <div className={`vote-choice${vote === 'yay' ? ' selected' : ''}`} onClick={() => setVote('yay')}>
+                      <span className="vote-icon yay">&#10003;</span>
+                      <span className="vote-label yay">YAY</span>
+                    </div>
+                    <div className={`vote-choice${vote === 'nay' ? ' selected' : ''}`} onClick={() => setVote('nay')}>
+                      <span className="vote-icon nay">&#10007;</span>
+                      <span className="vote-label nay">NAY</span>
+                    </div>
+                  </div>
+                  <div className="modal-actions">
+                    <button className="back-btn" onClick={() => { setVoting(false); setVote(null); }}>Back</button>
+                    <button className="submit-btn" disabled={!vote} onClick={() => alert(`Vote submitted: ${vote}`)}>Submit</button>
+                  </div>
+                </>
+              )}
               {opinionMode && (
                 <>
                   <textarea
