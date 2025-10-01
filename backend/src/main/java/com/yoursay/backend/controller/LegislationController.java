@@ -1,8 +1,10 @@
 package com.yoursay.backend.controller;
 
+import com.yoursay.backend.domain.LoginRequest;
 import com.yoursay.backend.domain.UserRequest;
 import com.yoursay.backend.domain.VerificationRequest;
 import com.yoursay.backend.service.EmailSenderService;
+import com.yoursay.backend.service.LoginService;
 import com.yoursay.backend.service.SignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +17,13 @@ import java.util.Random;
 @RequestMapping("/api")
 public class LegislationController {
     private final SignUpService signUpService;
+    private final LoginService loginService;
     private final EmailSenderService emailService;
 
     @Autowired
-    public LegislationController(SignUpService signUpService, EmailSenderService emailService) {
+    public LegislationController(SignUpService signUpService, LoginService loginService, EmailSenderService emailService) {
         this.signUpService = signUpService;
+        this.loginService = loginService;
         this.emailService = emailService;
     }
 
@@ -51,9 +55,9 @@ public class LegislationController {
 
     // 4. Check login credentials
     @PostMapping("/users/login")
-    public ResponseEntity<String> checkLogin(@RequestBody Map<String, String> credentials) {
-        // Placeholder logic
-        return ResponseEntity.ok("Login checked.");
+    public ResponseEntity<Boolean> checkLogin(@RequestBody LoginRequest request) {
+        boolean isCorrectPassword = loginService.checkPassword(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok(isCorrectPassword);
     }
 
     // 5. Update zipcode and preferences
