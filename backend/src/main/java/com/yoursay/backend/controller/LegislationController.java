@@ -1,21 +1,26 @@
 package com.yoursay.backend.controller;
 
 import com.yoursay.backend.domain.UserRequest;
+import com.yoursay.backend.domain.VerificationRequest;
+import com.yoursay.backend.service.EmailSenderService;
 import com.yoursay.backend.service.SignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api")
 public class LegislationController {
     private final SignUpService signUpService;
+    private final EmailSenderService emailService;
 
     @Autowired
-    public LegislationController(SignUpService signUpService) {
+    public LegislationController(SignUpService signUpService, EmailSenderService emailService) {
         this.signUpService = signUpService;
+        this.emailService = emailService;
     }
 
     // 1. Daily legislation data fetch
@@ -37,8 +42,10 @@ public class LegislationController {
 
     // 3. Send verification text
     @PostMapping("/users/send-verification")
-    public ResponseEntity<String> sendVerificationText(@RequestBody Map<String, String> request) {
-        // Placeholder logic
+    public ResponseEntity<String> sendVerificationText(@RequestBody VerificationRequest request) {
+        Integer randomCode = new Random().nextInt(999999);
+        signUpService.addVerificationCode(request.getEmail(), randomCode);
+        emailService.emailVerificationCode(request.getEmail(), randomCode);
         return ResponseEntity.ok("Verification text sent.");
     }
 

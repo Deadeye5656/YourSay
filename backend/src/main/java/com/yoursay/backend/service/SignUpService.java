@@ -7,7 +7,7 @@ import com.yoursay.backend.repository.UserRepository;
 import com.yoursay.backend.repository.VerificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SignUpService {
@@ -27,6 +27,15 @@ public class SignUpService {
         user.setZipcode(userRequest.getZipcode());
         user.setPreferences(userRequest.getPreferences());
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void addVerificationCode(String email, Integer code) {
+        verificationRepository.deleteByEmail(email);
+        Verification verification = new Verification();
+        verification.setCode(code);
+        verification.setEmail(email);
+        verificationRepository.save(verification);
     }
 
     public boolean checkVerificationCode(String email, Integer code) {
