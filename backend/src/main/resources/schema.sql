@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS verification;
+DROP TABLE IF EXISTS legislation;
+
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -15,7 +19,8 @@ CREATE TABLE IF NOT EXISTS verification (
 
 CREATE TABLE IF NOT EXISTS legislation (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
+    bill_id INTEGER NOT NULL UNIQUE,
+    title TEXT NOT NULL,
     description TEXT,
     level VARCHAR(20) NOT NULL, -- local, state, federal
     state VARCHAR(50),
