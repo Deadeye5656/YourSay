@@ -4,6 +4,7 @@ import com.yoursay.backend.domain.LoginRequest;
 import com.yoursay.backend.domain.UserRequest;
 import com.yoursay.backend.domain.VerificationRequest;
 import com.yoursay.backend.service.EmailSenderService;
+import com.yoursay.backend.service.FetchLegislationService;
 import com.yoursay.backend.service.LoginService;
 import com.yoursay.backend.service.SignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +20,21 @@ public class LegislationController {
     private final SignUpService signUpService;
     private final LoginService loginService;
     private final EmailSenderService emailService;
+    private final FetchLegislationService fetchLegislationService;
 
     @Autowired
-    public LegislationController(SignUpService signUpService, LoginService loginService, EmailSenderService emailService) {
+    public LegislationController(SignUpService signUpService, LoginService loginService, EmailSenderService emailService, FetchLegislationService fetchLegislationService) {
         this.signUpService = signUpService;
         this.loginService = loginService;
         this.emailService = emailService;
+        this.fetchLegislationService = fetchLegislationService;
     }
 
     // 1. Daily legislation data fetch
     @GetMapping("/legislation/daily-fetch")
     public ResponseEntity<String> fetchDailyLegislation() {
-        // Placeholder logic
-        return ResponseEntity.ok("Daily legislation data fetched.");
+        fetchLegislationService.fetchMasterList();
+        return ResponseEntity.ok("Legislation data fetched and updated successfully.");
     }
 
     // 2. Add new user

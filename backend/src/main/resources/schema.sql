@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS legislation (
     description TEXT,
     level VARCHAR(20) NOT NULL, -- local, state, federal
     state VARCHAR(50),
-    zipcode VARCHAR(10),
     date DATE
 );
 
