@@ -122,13 +122,7 @@ public class FetchLegislationService {
             legislation.setLevel("STATE");
         }
         legislation.setState(state);
-
-        List<String> dateList = Arrays.asList(data.getString("status_date").split("-"));
-        Date date = new Date();
-        date.setYear(Integer.parseInt(dateList.get(0))-1900);
-        date.setMonth(Integer.parseInt(dateList.get(1))-1);
-        date.setMinutes(Integer.parseInt(dateList.get(2)));
-        legislation.setDate(date);
+        legislation.setDate(data.getString("status_date"));
         return legislation;
     }
 

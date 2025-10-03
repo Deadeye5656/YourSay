@@ -21,5 +21,6 @@ public class Legislation {
     private String description;
     private String level;
     private String state;
-    private Date date;
+    private String zipcode;
+    private String date;
 }

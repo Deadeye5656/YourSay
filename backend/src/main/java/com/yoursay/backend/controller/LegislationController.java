@@ -1,30 +1,28 @@
 package com.yoursay.backend.controller;
 
 import com.yoursay.backend.domain.LoginRequest;
+import com.yoursay.backend.domain.PreferencesRequest;
 import com.yoursay.backend.domain.UserRequest;
 import com.yoursay.backend.domain.VerificationRequest;
-import com.yoursay.backend.service.EmailSenderService;
-import com.yoursay.backend.service.FetchLegislationService;
-import com.yoursay.backend.service.LoginService;
-import com.yoursay.backend.service.SignUpService;
+import com.yoursay.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 import java.util.Random;
 
 @RestController
 @RequestMapping("/api")
 public class LegislationController {
     private final SignUpService signUpService;
+    private final PreferencesService preferencesService;
     private final LoginService loginService;
     private final EmailSenderService emailService;
     private final FetchLegislationService fetchLegislationService;
 
     @Autowired
-    public LegislationController(SignUpService signUpService, LoginService loginService, EmailSenderService emailService, FetchLegislationService fetchLegislationService) {
+    public LegislationController(SignUpService signUpService, PreferencesService preferencesService, LoginService loginService, EmailSenderService emailService, FetchLegislationService fetchLegislationService) {
         this.signUpService = signUpService;
+        this.preferencesService = preferencesService;
         this.loginService = loginService;
         this.emailService = emailService;
         this.fetchLegislationService = fetchLegislationService;
@@ -64,9 +62,9 @@ public class LegislationController {
     }
 
     // 5. Update zipcode and preferences
-    @PutMapping("/users/{userId}/preferences")
-    public ResponseEntity<String> updatePreferences(@PathVariable String userId, @RequestBody Map<String, Object> preferences) {
-        // Placeholder logic
+    @PutMapping("/users/preferences")
+    public ResponseEntity<String> updatePreferences(@RequestBody PreferencesRequest preferences) {
+        preferencesService.updateUser(preferences.getEmail(), preferences.getZipcode(), preferences.getPreferences());
         return ResponseEntity.ok("Preferences updated.");
     }
 
