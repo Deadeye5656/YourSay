@@ -1,6 +1,7 @@
 package com.yoursay.backend.service;
 
 import com.yoursay.backend.domain.Legislation;
+import com.yoursay.backend.domain.LocalLegislationRequest;
 import com.yoursay.backend.repository.LegislationRepository;
 import jakarta.transaction.Transactional;
 import org.json.JSONException;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -39,6 +42,25 @@ public class LegislationImportService {
 
     public LegislationImportService(LegislationRepository legislationRepository) {
         this.legislationRepository = legislationRepository;
+    }
+
+    public boolean addLocalLegislation(LocalLegislationRequest legislationRequest) {
+        Legislation legislation = new Legislation();
+        legislation.setBill_id(null);
+        legislation.setTitle(legislationRequest.getTitle());
+        legislation.setDescription(legislationRequest.getDescription());
+        legislation.setBillLevel("LOCAL");
+        legislation.setState(legislationRequest.getState());
+        legislation.setCity(legislationRequest.getCity());
+        legislation.setZipcode(legislationRequest.getZipcode());
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+        legislation.setBillDate(currentDate);
+        try {
+            legislationRepository.save(legislation);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Transactional
@@ -117,12 +139,12 @@ public class LegislationImportService {
         legislation.setTitle(title);
         legislation.setDescription(data.getString("description"));
         if (state.equals("US")) {
-            legislation.setLevel("FEDERAL");
+            legislation.setBillLevel("FEDERAL");
         } else {
-            legislation.setLevel("STATE");
+            legislation.setBillLevel("STATE");
         }
         legislation.setState(state);
-        legislation.setDate(data.getString("status_date"));
+        legislation.setBillDate(data.getString("status_date"));
         return legislation;
     }
 

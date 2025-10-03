@@ -19,24 +19,24 @@ public class FetchLegislationService {
 
     @Transactional
     public List<Legislation> fetchLocalLegislation(String zipcode) {
-        return legislationRepository.findByZipcodeAndLevel(zipcode, "LOCAL");
+        return legislationRepository.findByZipcodeAndBillLevel(zipcode, "LOCAL");
     }
 
     @Transactional
     public List<Legislation> fetchStateLegislation(String state) {
-        return legislationRepository.findByStateAndLevel(state, "STATE");
+        return legislationRepository.findByStateAndBillLevel(state, "STATE");
     }
 
     @Transactional
     public List<Legislation> fetchFederalLegislation() {
-        return legislationRepository.findByStateAndLevel("US", "FEDERAL");
+        return legislationRepository.findByStateAndBillLevel("US", "FEDERAL");
     }
 
     @Transactional
     public List<Legislation> fetchRandomLegislation(String zipcode, String state) {
-        List<Legislation> localLegislation = legislationRepository.findByZipcodeAndLevel(zipcode, "LOCAL");
-        List<Legislation> stateLegislation = legislationRepository.findByStateAndLevel(state, "STATE");
-        List<Legislation> federalLegislation = legislationRepository.findByStateAndLevel("US", "FEDERAL");
+        List<Legislation> localLegislation = legislationRepository.findByZipcodeAndBillLevel(zipcode, "LOCAL");
+        List<Legislation> stateLegislation = legislationRepository.findByStateAndBillLevel(state, "STATE");
+        List<Legislation> federalLegislation = legislationRepository.findByStateAndBillLevel("US", "FEDERAL");
         List<Legislation> combined = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             if (i < localLegislation.size()){

@@ -96,4 +96,11 @@ public class LegislationController {
         List<Legislation> legislationList = fetchLegislationService.fetchRandomLegislation(zipcode, state);
         return ResponseEntity.ok(legislationList);
     }
+
+    // 10. Add local legislation
+    @PostMapping("/legislation/local")
+    public ResponseEntity<Boolean> addLocalLegislation(@RequestBody LocalLegislationRequest request) {
+        boolean success = legislationImportService.addLocalLegislation(request);
+        return ResponseEntity.ok(success);
+    }
 }

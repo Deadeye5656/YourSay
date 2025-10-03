@@ -18,13 +18,14 @@ CREATE TABLE IF NOT EXISTS verification (
 
 CREATE TABLE IF NOT EXISTS legislation (
     id SERIAL PRIMARY KEY,
-    bill_id INTEGER NOT NULL UNIQUE,
+    bill_id INTEGER UNIQUE,
     title TEXT NOT NULL,
     description TEXT,
-    level VARCHAR(20) NOT NULL, -- local, state, federal
+    bill_level VARCHAR(20) NOT NULL, -- local, state, federal
     state VARCHAR(2),
     zipcode VARCHAR(5),
-    date DATE
+    city VARCHAR(100),
+    bill_date VARCHAR(10)
 );
 
 INSERT INTO users (email, password, zipcode, preferences) VALUES
@@ -35,8 +36,8 @@ INSERT INTO verification (email, code) VALUES
 ('test@test.com', 123123)
 ON CONFLICT (email) DO NOTHING;
 
-INSERT INTO legislation (bill_id, title, description, level, state, zipcode, date) VALUES
-('123', 'bill title', 'bill description', 'LOCAL', 'MI', '12345', '2023-01-01'),
-('124', 'another bill title', 'another bill description', 'STATE', 'MI', '12345', '2023-02-01'),
-('125', 'federal bill title', 'federal bill description', 'FEDERAL', 'US', NULL, '2023-03-01')
+INSERT INTO legislation (bill_id, title, description, bill_level, state, zipcode, city, bill_date) VALUES
+('123', 'bill title', 'bill description', 'LOCAL', 'MI', '12345', 'NYC', '2023-01-01'),
+('124', 'another bill title', 'another bill description', 'STATE', 'MI', '12345', NULL, '2023-02-01'),
+('125', 'federal bill title', 'federal bill description', 'FEDERAL', 'US', NULL, NULL, '2023-03-01')
 ON CONFLICT (bill_id) DO NOTHING;

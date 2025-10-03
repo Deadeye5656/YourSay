@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Entity
 @Table(name = "legislation")
 @Getter
@@ -19,8 +17,9 @@ public class Legislation {
     private Integer bill_id;
     private String title;
     private String description;
-    private String level;
+    private String billLevel;
     private String state;
     private String zipcode;
-    private String date;
+    private String city;
+    private String billDate;
 }
