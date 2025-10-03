@@ -1,13 +1,12 @@
 package com.yoursay.backend.controller;
 
-import com.yoursay.backend.domain.LoginRequest;
-import com.yoursay.backend.domain.PreferencesRequest;
-import com.yoursay.backend.domain.UserRequest;
-import com.yoursay.backend.domain.VerificationRequest;
+import com.yoursay.backend.domain.*;
 import com.yoursay.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Random;
 
 @RestController
@@ -17,21 +16,23 @@ public class LegislationController {
     private final PreferencesService preferencesService;
     private final LoginService loginService;
     private final EmailSenderService emailService;
+    private final LegislationImportService legislationImportService;
     private final FetchLegislationService fetchLegislationService;
 
     @Autowired
-    public LegislationController(SignUpService signUpService, PreferencesService preferencesService, LoginService loginService, EmailSenderService emailService, FetchLegislationService fetchLegislationService) {
+    public LegislationController(SignUpService signUpService, PreferencesService preferencesService, LoginService loginService, EmailSenderService emailService, LegislationImportService legislationImportService, FetchLegislationService fetchLegislationService) {
         this.signUpService = signUpService;
         this.preferencesService = preferencesService;
         this.loginService = loginService;
         this.emailService = emailService;
+        this.legislationImportService = legislationImportService;
         this.fetchLegislationService = fetchLegislationService;
     }
 
     // 1. Daily legislation data fetch
     @GetMapping("/legislation/daily-fetch")
     public ResponseEntity<String> fetchDailyLegislation() {
-        fetchLegislationService.fetchMasterList();
+        legislationImportService.fetchMasterList();
         return ResponseEntity.ok("Legislation data fetched and updated successfully.");
     }
 
@@ -69,30 +70,30 @@ public class LegislationController {
     }
 
     // 6. Fetch local legislation
-    @GetMapping("/legislation/local")
-    public ResponseEntity<String> fetchLocalLegislation(@RequestParam String zipcode) {
-        // Placeholder logic
-        return ResponseEntity.ok("Local legislation fetched for zipcode: " + zipcode);
+    @GetMapping("/legislation/local/{zipcode}")
+    public ResponseEntity<List<Legislation>> fetchLocalLegislation(@PathVariable String zipcode) {
+        List<Legislation> legislationList = fetchLegislationService.fetchLocalLegislation(zipcode);
+        return ResponseEntity.ok(legislationList);
     }
 
     // 7. Fetch state legislation
-    @GetMapping("/legislation/state")
-    public ResponseEntity<String> fetchStateLegislation(@RequestParam String state) {
-        // Placeholder logic
-        return ResponseEntity.ok("State legislation fetched for state: " + state);
+    @GetMapping("/legislation/state/{state}")
+    public ResponseEntity<List<Legislation>> fetchStateLegislation(@PathVariable String state) {
+        List<Legislation> legislationList = fetchLegislationService.fetchStateLegislation(state);
+        return ResponseEntity.ok(legislationList);
     }
 
     // 8. Fetch federal legislation
     @GetMapping("/legislation/federal")
-    public ResponseEntity<String> fetchFederalLegislation() {
-        // Placeholder logic
-        return ResponseEntity.ok("Federal legislation fetched.");
+    public ResponseEntity<List<Legislation>> fetchFederalLegislation() {
+        List<Legislation> legislationList = fetchLegislationService.fetchFederalLegislation();
+        return ResponseEntity.ok(legislationList);
     }
 
     // 9. Fetch random legislation
-    @GetMapping("/legislation/random")
-    public ResponseEntity<String> fetchRandomLegislation() {
-        // Placeholder logic
-        return ResponseEntity.ok("Random legislation fetched.");
+    @GetMapping("/legislation/random/{zipcode}/{state}")
+    public ResponseEntity<List<Legislation>> fetchRandomLegislation(@PathVariable String zipcode, @PathVariable String state) {
+        List<Legislation> legislationList = fetchLegislationService.fetchRandomLegislation(zipcode, state);
+        return ResponseEntity.ok(legislationList);
     }
 }
