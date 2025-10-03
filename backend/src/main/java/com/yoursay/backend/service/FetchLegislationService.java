@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class FetchLegislationService {
@@ -19,12 +17,9 @@ public class FetchLegislationService {
     private String apiKey;
     private final String basePath = "https://api.legiscan.com/?key=";
     private final String operation = "&op=getMasterList";
-    final int totalBills = 1;
-    final int billsToSkip = 20;
+    final int totalBills = 6;
 
     private final LegislationRepository legislationRepository;
-
-    private final GemeniService gemeniService;
 
     private List<String> excludedTitles = List.of("Day", "day", "Holiday", "holiday", "Week", "week", "Month", "month",
             "Recognition", "recognition", "Memorial", "memorial", "Proclamation", "proclamation", "Commendation", "commendation",
@@ -42,13 +37,14 @@ public class FetchLegislationService {
             "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "US", "DC"
     );
 
-    public FetchLegislationService(LegislationRepository legislationRepository, GemeniService gemeniService) {
+    public FetchLegislationService(LegislationRepository legislationRepository) {
         this.legislationRepository = legislationRepository;
-        this.gemeniService = gemeniService;
     }
 
     @Transactional
     public void fetchMasterList() {
+        List<Integer> existingBillIds = new ArrayList<>();
+
         for (String state : stateAbbreviations) {
             RestTemplate restTemplate = new RestTemplate();
             String LEGISCAN_URL = basePath + apiKey + operation + "&state=" + state;
@@ -58,52 +54,68 @@ public class FetchLegislationService {
             final JSONObject geodata = obj.getJSONObject("masterlist");
 
             int index = getLastIndex(geodata);
+            int lastIndex = index;
 
             int total = 0;
+            boolean shouldExcludeByTitle = true;
+            boolean secondPass = false;
+            int billsToSkip = 10;
             for (; total < totalBills; index-=billsToSkip) {
                 try {
+                    if (index < 0) {
+                        if (secondPass) {
+                            break;
+                        }
+                        index = lastIndex;
+                        billsToSkip = 1;
+                        shouldExcludeByTitle = false;
+                        secondPass = true;
+                    }
                     final JSONObject data = geodata.getJSONObject(Integer.toString(index));
                     String title = data.get("title").toString();
 
                     boolean excluded = false;
-                    for (String excludedTitle : excludedTitles) {
-                        if (title.contains(excludedTitle)) {
-                            excluded = true;
-                            break;
-                        }
+                    if (shouldExcludeByTitle) {
+                        excluded = checkTitleExclusion(title, excluded);
                     }
-                    if (data.getInt("status") < 1 || data.getInt("status") > 2) {
-                        excluded = true;
-                    }
+
                     if (excluded) {
                         continue;
                     }
 
-                    String aiDescription = gemeniService.generateResponse(data.get("number").toString() +
-                            data.get("title").toString() + data.get("description").toString() + " explain this bill from "
-                            + state + " in 5 concise sentences");
+                    Legislation legislation = buildLegislation(data, title, state);
 
-                    Legislation legislation = buildLegislation(data, title, aiDescription, state);
+                    if (existingBillIds.contains(legislation.getBill_id())) {
+                        continue;
+                    }
 
                     legislationRepository.save(legislation);
 
-                    total++;
+                    existingBillIds.add(legislation.getBill_id());
 
-                    System.out.println(legislation.getState());
-                } catch (JSONException e) {
-                    return;
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    total++;
+                } catch (Exception e) {
+                    System.out.println("Exception "+e.getMessage());
                 }
             }
         }
     }
 
-    private static Legislation buildLegislation(JSONObject data, String title, String aiDescription, String state) {
+    private boolean checkTitleExclusion(String title, boolean excluded) {
+        for (String excludedTitle : excludedTitles) {
+            if (title.contains(excludedTitle)) {
+                excluded = true;
+                break;
+            }
+        }
+        return excluded;
+    }
+
+    private static Legislation buildLegislation(JSONObject data, String title, String state) {
         Legislation legislation = new Legislation();
         legislation.setBill_id(data.getInt("bill_id"));
         legislation.setTitle(title);
-        legislation.setDescription(aiDescription);
+        legislation.setDescription(data.getString("description"));
         if (state.equals("US")) {
             legislation.setLevel("FEDERAL");
         } else {
