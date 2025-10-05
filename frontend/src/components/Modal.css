@@ -1,7 +1,7 @@
 .vote-choices {
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 2rem;
   margin: 2rem 0 1.5rem 0;
 }
 
@@ -10,35 +10,102 @@
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  padding: 1.5rem 2.5rem;
+  border-radius: 16px;
+  border: 3px solid transparent;
+  background: #f8f9fa;
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
 }
+
+.vote-choice::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.vote-choice:hover::before {
+  opacity: 1;
+}
+
+.vote-choice:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
 .vote-choice.selected {
-  box-shadow: 0 0 0 4px #e0e0e0;
-  border-color: #2a3d7c;
-  background: #f5faff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
 }
+
+.vote-choice.selected.yay-selected {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+  border-color: #4caf50;
+  color: white;
+}
+
+.vote-choice.selected.nay-selected {
+  background: linear-gradient(135deg, #f44336 0%, #ef5350 100%);
+  border-color: #f44336;
+  color: white;
+}
+
 .vote-icon.yay {
-  font-size: 3rem;
-  color: #43a047;
+  font-size: 3.5rem;
+  color: #4caf50;
   margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
 }
+
+.vote-choice.selected.yay-selected .vote-icon.yay {
+  color: white;
+  transform: scale(1.1);
+}
+
 .vote-label.yay {
-  font-size: 1.5rem;
-  color: #43a047;
-  font-weight: bold;
+  font-size: 1.3rem;
+  color: #4caf50;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
 }
+
+.vote-choice.selected.yay-selected .vote-label.yay {
+  color: white;
+}
+
 .vote-icon.nay {
-  font-size: 3rem;
-  color: #e53935;
+  font-size: 3.5rem;
+  color: #f44336;
   margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
 }
+
+.vote-choice.selected.nay-selected .vote-icon.nay {
+  color: white;
+  transform: scale(1.1);
+}
+
 .vote-label.nay {
-  font-size: 1.5rem;
-  color: #e53935;
-  font-weight: bold;
+  font-size: 1.3rem;
+  color: #f44336;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.vote-choice.selected.nay-selected .vote-label.nay {
+  color: white;
 }
 .back-btn, .submit-btn {
   background: #3949ab;
@@ -196,20 +263,20 @@
   top: 1rem !important;
   right: 1rem !important;
   color: white !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  border-radius: 50% !important;
-  width: 40px;
-  height: 40px;
+  background: none !important;
+  border: none !important;
+  width: auto;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem !important;
-  transition: all 0.3s ease;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .modern-close:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
-  transform: rotate(90deg);
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .modal-subtitle {
@@ -339,4 +406,63 @@
     margin: -1.5rem -1.5rem 1.5rem -1.5rem;
     padding: 1.5rem;
   }
+}
+
+/* View Legislation Modal Styles */
+.view-legislation-modal {
+  width: 575px;
+  height: 650px;
+  max-width: 575px;
+  max-height: 650px;
+  display: flex;
+  flex-direction: column;
+}
+
+.view-modal-header {
+  background: linear-gradient(90deg, #1a237e 0%, #3949ab 100%);
+  margin: -2rem -2rem 2rem -2rem;
+  padding: 2rem;
+  border-radius: 12px 12px 0 0;
+  color: white;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-modal-header h2 {
+  color: white;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.modal-content-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 0.5rem;
+  padding-bottom: 0;
+}
+
+.modal-content-body .modal-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  border-top: 1px solid #e1e5e9;
+}
+
+.modal-content-body p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.modal-content-body strong {
+  color: #2a3d7c;
 }

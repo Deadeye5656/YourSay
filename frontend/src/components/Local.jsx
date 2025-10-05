@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import './Local.css';
 
-import { fetchLocalLegislation } from '../api';
+import { fetchLocalLegislation, addLocalLegislation } from '../api';
 
-const DEFAULT_ZIPCODE = '90210';
+const DEFAULT_ZIPCODE = '48067';
 
 const filterOptions = ['All', 'Upcoming', 'Past'];
 
@@ -66,111 +66,108 @@ const Local = () => {
   }
   return (
     <div className="local-page">
-      <h2>Local Legislation</h2>
-      {/* Only show filter and search bar if there are cards to show */}
-      {(!error && filteredLegislation.length > 0) && (
-        <div className="filter-bar">
-          <select value={filter} onChange={e => setFilter(e.target.value)} className="filter-dropdown">
-            {filterOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-          <input
-            type="text"
-            className="search-bar"
-            placeholder="Search legislation..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        </div>
-      )}
-      <div className="legislation-list">
-        {error && <div className="error">{error}</div>}
-        {!error && filteredLegislation.length === 0 && (
-          <div className="no-legislation-prompt">
-            <p>
-              There are currently no local legislations in our records.<br />
-              Please add any upcoming proposals or initiatives in your local municipalities to help keep the community informed.
-            </p>
-            <button className="add-legislation-btn" onClick={() => setAddModalOpen(true)}>Add New Legislation</button>
+      <div className="local-page-header">
+        <h2>Local Legislation</h2>
+        <div className="local-page-subtitle">Community Laws & Municipal Proposals</div>
+      </div>
+      <div className="local-page-content">
+        {/* Only show filter and search bar if there are cards to show */}
+        {(!error && filteredLegislation.length > 0) && (
+          <div className="filter-bar">
+            <select value={filter} onChange={e => setFilter(e.target.value)} className="filter-dropdown">
+              {filterOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
+            <input
+              type="text"
+              className="search-bar"
+              placeholder="Search legislation..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
           </div>
         )}
-        {!error && filteredLegislation.map((item, idx) => (
-          <div key={item.id || idx} className="legislation-card big">
-            <h3>{item.title}</h3>
-            <p><strong>Date:</strong> {item.billDate || item.date || 'N/A'}</p>
-            <p><strong>Summary:</strong> {item.description || item.summary}</p>
-            <div className="card-actions">
-              <button className="view-btn" onClick={() => { setModalData(item); setModalOpen(true); }}>View Legislation</button>
+        <div className="legislation-list">
+          {error && <div className="error">{error}</div>}
+          {!error && filteredLegislation.length === 0 && (
+            <div className="no-legislation-prompt">
+              <p>
+                There are currently no local legislations in our records.<br />
+                Please add any upcoming proposals or initiatives in your local municipalities to help keep the community informed.
+              </p>
+              <button className="add-legislation-btn" onClick={() => setAddModalOpen(true)}>Add New Legislation</button>
             </div>
-          </div>
-        ))}
-        {/* Add invisible card for spacing if only one card in row */}
-        {!error && filteredLegislation.length === 1 && (
-          <div className="legislation-card big invisible-card" aria-hidden="true"></div>
-        )}
+          )}
+          {!error && filteredLegislation.map((item, idx) => (
+            <div key={item.id || idx} className="legislation-card big">
+              <h3>{item.title}</h3>
+              <p><strong>Last Updated:</strong> {item.billDate || item.date || 'N/A'}</p>
+              <p><strong>Summary:</strong> {item.description || item.summary}</p>
+              <div className="card-actions">
+                <button className="view-btn" onClick={() => { setModalData(item); setModalOpen(true); }}>View Legislation</button>
+              </div>
+            </div>
+          ))}
+          {/* Add invisible card for spacing if only one card in row */}
+          {!error && filteredLegislation.length === 1 && (
+            <div className="legislation-card big invisible-card" aria-hidden="true"></div>
+          )}
+        </div>
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           {modalData && (
-            <div>
-              <div className="modal-header">
+            <div className="view-legislation-modal">
+              <div className="modal-header view-modal-header">
                 <h2>{modalData.title}</h2>
-                <button className="modal-close" onClick={() => { setModalOpen(false); setVoting(false); setVote(null); setOpinionMode(false); setOpinionText(''); }}>&times;</button>
+                <button className="modal-close modern-close" onClick={() => { setModalOpen(false); setVoting(false); setVote(null); setOpinionMode(false); setOpinionText(''); }}>&times;</button>
               </div>
-              <p><strong>Date:</strong> {modalData.date}</p>
-              <p><strong>Summary:</strong> {modalData.summary}</p>
-              {!voting && !opinionMode ? (
-                <div className="modal-actions">
-                  <button className="vote-btn" onClick={() => setVoting(true)}>Vote</button>
-                  <button className="opinion-btn" onClick={() => setOpinionMode(true)}>Submit Opinion</button>
-                </div>
-              ) : null}
-              {voting && !opinionMode && (
-                <>
-                  <div className="vote-choices">
-                    <div className={`vote-choice${vote === 'yay' ? ' selected' : ''}`} onClick={() => setVote('yay')}>
-                      <span className="vote-icon yay">&#10003;</span>
-                      <span className="vote-label yay">YAY</span>
-                    </div>
-                    <div className={`vote-choice${vote === 'nay' ? ' selected' : ''}`} onClick={() => setVote('nay')}>
-                      <span className="vote-icon nay">&#10007;</span>
-                      <span className="vote-label nay">NAY</span>
-                    </div>
+              <div className="modal-content-body">
+                <p><strong>Last Updated:</strong> {modalData.billDate}</p>
+                <p><strong>Summary:</strong> {modalData.description}</p>
+                {!voting && !opinionMode ? (
+                  <div className="modal-actions modern-actions">
+                    <button className="btn-secondary" onClick={() => setVoting(true)}>Vote</button>
+                    <button className="btn-primary" onClick={() => setOpinionMode(true)}>Submit Opinion</button>
                   </div>
-                  <div className="modal-actions">
-                    <button className="back-btn" onClick={() => { setVoting(false); setVote(null); }}>Back</button>
-                    <button className="submit-btn" disabled={!vote} onClick={() => alert(`Vote submitted: ${vote}`)}>Submit</button>
-                  </div>
-                </>
-              )}
-              {opinionMode && (
-                <>
-                  <textarea
-                    className="opinion-textarea"
-                    value={opinionText}
-                    onChange={e => setOpinionText(e.target.value)}
-                    placeholder="Write your opinion here..."
-                    rows={5}
-                    style={{
-                      width: '80%',
-                      margin: '2rem auto 0.5rem auto',
-                      display: 'block',
-                      fontSize: '1.1rem',
-                      borderRadius: '8px',
-                      border: '1px solid #ccc',
-                      padding: '1rem',
-                      background: '#f9f9f9',
-                      color: '#222',
-                    }}
-                  />
-                  {opinionText.length > 0 && (
-                    <div style={{ color: '#e53935', marginBottom: '1rem', textAlign: 'center', fontWeight: '500' }}>
-                      {opinionText.length < 50 && `Your opinion must be at least 50 characters to submit. (${opinionText.length}/50)`}
+                ) : null}
+                {voting && !opinionMode && (
+                  <>
+                    <div className="vote-choices">
+                      <div className={`vote-choice${vote === 'yay' ? ' selected yay-selected' : ''}`} onClick={() => setVote('yay')}>
+                        <span className="vote-icon yay">&#10003;</span>
+                        <span className="vote-label yay">YAY</span>
+                      </div>
+                      <div className={`vote-choice${vote === 'nay' ? ' selected nay-selected' : ''}`} onClick={() => setVote('nay')}>
+                        <span className="vote-icon nay">&#10007;</span>
+                        <span className="vote-label nay">NAY</span>
+                      </div>
                     </div>
-                  )}
-                  <div className="modal-actions">
-                    <button className="back-btn" onClick={() => { setOpinionMode(false); setOpinionText(''); }}>Back</button>
-                    <button className="submit-btn" disabled={opinionText.trim().length < 50} onClick={() => alert(`Opinion submitted: ${opinionText}`)}>Submit</button>
-                  </div>
-                </>
-              )}
+                    <div className="modal-actions modern-actions">
+                      <button className="btn-secondary" onClick={() => { setVoting(false); setVote(null); }}>Back</button>
+                      <button className="btn-primary" disabled={!vote} onClick={() => alert(`Vote submitted: ${vote}`)}>Submit</button>
+                    </div>
+                  </>
+                )}
+                {opinionMode && (
+                  <>
+                    <textarea
+                      className="form-textarea"
+                      value={opinionText}
+                      onChange={e => setOpinionText(e.target.value)}
+                      placeholder="Write your opinion here..."
+                      rows={5}
+                    />
+                    <div className="char-count">{opinionText.length}/500</div>
+                    {opinionText.length > 0 && opinionText.length < 50 && (
+                      <div className="error-message">
+                        Your opinion must be at least 50 characters to submit. ({opinionText.length}/50)
+                      </div>
+                    )}
+                    <div className="modal-actions modern-actions">
+                      <button className="btn-secondary" onClick={() => { setOpinionMode(false); setOpinionText(''); }}>Back</button>
+                      <button className="btn-primary" disabled={opinionText.trim().length < 50} onClick={() => alert(`Opinion submitted: ${opinionText}`)}>Submit</button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           )}
         </Modal>
@@ -185,7 +182,7 @@ const Local = () => {
               Help keep your community informed about local legislative matters
             </div>
             <form
-              onSubmit={e => {
+              onSubmit={async e => {
                 e.preventDefault();
                 // Simple validation
                 if (!newLegislation.zipcode || !newLegislation.city || !newLegislation.state || !newLegislation.title || !newLegislation.description) {
@@ -193,10 +190,20 @@ const Local = () => {
                   return;
                 }
                 setAddError('');
-                // Here you would send to backend, for now just close and reset
-                setAddModalOpen(false);
-                setNewLegislation({ zipcode: '', city: '', state: '', title: '', description: '' });
-                alert('Legislation submitted! (Demo only)');
+                try {
+                  const result = await addLocalLegislation(newLegislation);
+                  if (result === true) {
+                    setAddModalOpen(false);
+                    setNewLegislation({ zipcode: '', city: '', state: '', title: '', description: '' });
+                    // Optionally, reload the local legislation list
+                    const data = await fetchLocalLegislation(newLegislation.zipcode);
+                    setLegislation(Array.isArray(data) ? data : []);
+                  } else {
+                    setAddError('Failed to submit legislation.');
+                  }
+                } catch (err) {
+                  setAddError('Failed to submit legislation.');
+                }
               }}
               className="add-legislation-form"
             >
@@ -228,15 +235,64 @@ const Local = () => {
               </div>
               <div className="form-group">
                 <label>State</label>
-                <input
-                  type="text"
+                <select
                   className="form-input"
-                  placeholder="Enter state"
                   value={newLegislation.state}
                   onChange={e => setNewLegislation({ ...newLegislation, state: e.target.value })}
-                  maxLength={30}
                   required
-                />
+                >
+                  <option value="" disabled>Select state</option>
+                  <option value="AL">AL</option>
+                  <option value="AK">AK</option>
+                  <option value="AZ">AZ</option>
+                  <option value="AR">AR</option>
+                  <option value="CA">CA</option>
+                  <option value="CO">CO</option>
+                  <option value="CT">CT</option>
+                  <option value="DE">DE</option>
+                  <option value="FL">FL</option>
+                  <option value="GA">GA</option>
+                  <option value="HI">HI</option>
+                  <option value="ID">ID</option>
+                  <option value="IL">IL</option>
+                  <option value="IN">IN</option>
+                  <option value="IA">IA</option>
+                  <option value="KS">KS</option>
+                  <option value="KY">KY</option>
+                  <option value="LA">LA</option>
+                  <option value="ME">ME</option>
+                  <option value="MD">MD</option>
+                  <option value="MA">MA</option>
+                  <option value="MI">MI</option>
+                  <option value="MN">MN</option>
+                  <option value="MS">MS</option>
+                  <option value="MO">MO</option>
+                  <option value="MT">MT</option>
+                  <option value="NE">NE</option>
+                  <option value="NV">NV</option>
+                  <option value="NH">NH</option>
+                  <option value="NJ">NJ</option>
+                  <option value="NM">NM</option>
+                  <option value="NY">NY</option>
+                  <option value="NC">NC</option>
+                  <option value="ND">ND</option>
+                  <option value="OH">OH</option>
+                  <option value="OK">OK</option>
+                  <option value="OR">OR</option>
+                  <option value="PA">PA</option>
+                  <option value="RI">RI</option>
+                  <option value="SC">SC</option>
+                  <option value="SD">SD</option>
+                  <option value="TN">TN</option>
+                  <option value="TX">TX</option>
+                  <option value="UT">UT</option>
+                  <option value="VT">VT</option>
+                  <option value="VA">VA</option>
+                  <option value="WA">WA</option>
+                  <option value="WV">WV</option>
+                  <option value="WI">WI</option>
+                  <option value="WY">WY</option>
+                </select>
               </div>
               <div className="form-group">
                 <label>Title</label>
