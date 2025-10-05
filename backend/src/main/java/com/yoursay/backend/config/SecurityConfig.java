@@ -1,4 +1,4 @@
-package com.yoursay.backend;
+package com.yoursay.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,13 +10,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .authorizeHttpRequests()
-                .requestMatchers("/users").permitAll()
-                .anyRequest().authenticated()
-            .and()
-            .httpBasic();
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> {}); // uses your global CORS config
+        // Add your authorization rules here
         return http.build();
     }
 }
-

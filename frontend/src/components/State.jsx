@@ -1,21 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import './State.css';
 
-const stateLegislation = [
-  {
-    title: 'Education Funding Bill',
-    date: 'State Legislature - Oct 15, 2025',
-    summary: 'A bill to increase funding for public schools and improve teacher salaries.',
-    details: 'This bill proposes a 15% increase in state education funding, targeting under-resourced districts and teacher retention.'
-  },
-  {
-    title: 'Transportation Bill',
-    date: 'State Legislature - Nov 12, 2025',
-    summary: 'Comprehensive improvements to state highways and public transit systems.',
-    details: 'The bill includes new investments in road repairs, expanded bus routes, and incentives for green transportation.'
-  }
-];
+import { fetchStateLegislation } from '../api';
+
+
+// You may want to get the user's state from props, context, or user profile. For demo, default to 'CA'.
+const DEFAULT_STATE = 'MI';
 
 const filterOptions = ['All', 'Upcoming', 'Past'];
 
@@ -29,8 +20,28 @@ const State = () => {
   const [voting, setVoting] = useState(false);
   const [vote, setVote] = useState(null);
 
-  const filteredLegislation = stateLegislation.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) || item.summary.toLowerCase().includes(search.toLowerCase());
+  const [legislation, setLegislation] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function loadLegislation() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchStateLegislation(DEFAULT_STATE);
+        setLegislation(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setError('Failed to load state legislation.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadLegislation();
+  }, []);
+
+  const filteredLegislation = legislation.filter(item => {
+    const matchesSearch = (item.title?.toLowerCase() || '').includes(search.toLowerCase()) || (item.description?.toLowerCase() || '').includes(search.toLowerCase());
     // Example filter logic: treat all as upcoming for demo
     return matchesSearch && (filter === 'All' || filter === 'Upcoming');
   });
@@ -51,12 +62,15 @@ const State = () => {
         />
       </div>
       <div className="legislation-list">
-        {filteredLegislation.map((item, idx) => (
-          <div key={idx} className="legislation-card big">
+        {loading && <div className="loading">Loading...</div>}
+        {error && <div className="error">{error}</div>}
+        {!loading && !error && filteredLegislation.length === 0 && <div className="no-results">No legislation found.</div>}
+        {!loading && !error && filteredLegislation.map((item, idx) => (
+          <div key={item.id || idx} className="legislation-card big">
             <h3>{item.title}</h3>
-            <p><strong>Date:</strong> {item.date}</p>
-            <p><strong>Summary:</strong> {item.summary}</p>
-            <p><strong>Details:</strong> {item.details}</p>
+            <p><strong>Date:</strong> {item.billDate || 'N/A'}</p>
+            <p><strong>Summary:</strong> {item.description}</p>
+            <p><strong>Details:</strong> {item.details || ''}</p>
             <div className="card-actions">
               <button className="view-btn" onClick={() => { setModalData(item); setModalOpen(true); }}>View Legislation</button>
             </div>
