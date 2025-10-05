@@ -164,3 +164,179 @@
   color: #3949ab;
   cursor: pointer;
 }
+
+/* Modern Add Legislation Modal Styles */
+.add-legislation-modal {
+  max-width: 600px;
+  width: 100%;
+}
+
+.add-modal-header {
+  background: linear-gradient(90deg, #1a237e 0%, #3949ab 100%);
+  margin: -2rem -2rem 2rem -2rem;
+  padding: 2rem;
+  border-radius: 12px 12px 0 0;
+  color: white;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-modal-header h2 {
+  color: white;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.modern-close {
+  position: absolute !important;
+  top: 1rem !important;
+  right: 1rem !important;
+  color: white !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 50% !important;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem !important;
+  transition: all 0.3s ease;
+}
+
+.modern-close:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: rotate(90deg);
+}
+
+.modal-subtitle {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.add-legislation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #2a3d7c;
+  font-size: 1rem;
+}
+
+.form-input, .form-textarea {
+  padding: 1rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+  color: #333;
+}
+
+.form-input:focus, .form-textarea:focus {
+  outline: none;
+  border-color: #3949ab;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(57, 73, 171, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.error-message {
+  background: #fff5f5;
+  border: 2px solid #e53935;
+  color: #e53935;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.modern-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #1a237e 0%, #3949ab 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(30, 30, 60, 0.08);
+}
+
+.btn-primary:hover {
+  background: #ffca28;
+  color: #1a237e;
+}
+
+.btn-secondary {
+  background: #f8f9fa;
+  color: #3949ab;
+  border: 2px solid #e1e5e9;
+}
+
+.btn-secondary:hover {
+  background: #e9ecef;
+  border-color: #3949ab;
+  color: #1a237e;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .modern-actions {
+    flex-direction: column;
+  }
+  
+  .add-modal-header {
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    padding: 1.5rem;
+  }
+}

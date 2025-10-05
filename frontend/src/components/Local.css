@@ -1,3 +1,25 @@
+/* Big spinning blue circle for loading */
+.loading-spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.big-blue-spinner {
+  border: 16px solid #e3f0ff;
+  border-top: 16px solid #2196f3;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 32px 0 #2196f355;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 /* Add New Legislation Button Theme Style */
 .add-legislation-btn {
   background: linear-gradient(90deg, #1a237e 0%, #3949ab 100%);
@@ -58,10 +80,17 @@
   border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   padding: 2rem;
-  max-width: 400px;
-  min-width: 300px;
+  width: 340px;
+  min-width: 340px;
+  max-width: 340px;
+  min-height: 340px;
+  max-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   margin: 1rem 0;
   transition: box-shadow 0.2s;
+  overflow: hidden;
 }
 .legislation-card.big:hover {
   box-shadow: 0 4px 16px rgba(0,0,0,0.18);
@@ -69,10 +98,23 @@
 .legislation-card.big h3 {
   margin-top: 0;
   color: #2a3d7c;
+  margin-bottom: 0.5rem;
 }
 .legislation-card.big p {
   margin: 0.5rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  line-clamp: 3;
 }
+ .invisible-card {
+   opacity: 0;
+   pointer-events: none;
+   background: none !important;
+   box-shadow: none !important;
+ }
 
 .filter-bar {
   display: flex;

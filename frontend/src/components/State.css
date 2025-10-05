@@ -1,3 +1,9 @@
+.invisible-card {
+  opacity: 0;
+  pointer-events: none;
+  background: none !important;
+  box-shadow: none !important;
+}
 .details-btn {
   background: #f5a623;
   color: #fff;
@@ -23,10 +29,17 @@
   border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   padding: 2rem;
-  max-width: 400px;
-  min-width: 300px;
+  width: 340px;
+  min-width: 340px;
+  max-width: 340px;
+  min-height: 340px;
+  max-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   margin: 1rem 0;
   transition: box-shadow 0.2s;
+  overflow: hidden;
 }
 .legislation-card.big:hover {
   box-shadow: 0 4px 16px rgba(0,0,0,0.18);
@@ -34,9 +47,16 @@
 .legislation-card.big h3 {
   margin-top: 0;
   color: #2a3d7c;
+  margin-bottom: 0.5rem;
 }
 .legislation-card.big p {
   margin: 0.5rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  line-clamp: 3;
 }
 
 .filter-bar {

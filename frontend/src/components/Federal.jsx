@@ -1,23 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import './Federal.css';
 
-const federalLegislation = [
-  {
-    title: 'Healthcare Expansion Act',
-    date: 'Congress - Nov 1, 2025',
-    summary: 'Expands access to healthcare for low-income families and rural communities.',
-    details: 'The act increases subsidies, expands Medicaid, and funds new rural clinics to improve national health outcomes.'
-  },
-  {
-    title: 'Tax Reform Act',
-    date: 'Congress - Nov 20, 2025',
-    summary: 'Major overhaul of the federal tax code to simplify filing and adjust rates.',
-    details: 'This reform reduces paperwork, adjusts tax brackets, and aims to make the system fairer for middle-class families.'
-  }
-];
+import { fetchFederalLegislation } from '../api';
 
 const filterOptions = ['All', 'Upcoming', 'Past'];
+
 
 const Federal = () => {
   const [filter, setFilter] = useState('All');
@@ -28,13 +16,42 @@ const Federal = () => {
   const [vote, setVote] = useState(null);
   const [opinionMode, setOpinionMode] = useState(false);
   const [opinionText, setOpinionText] = useState('');
+  const [legislation, setLegislation] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [minLoading, setMinLoading] = useState(true);
 
-  const filteredLegislation = federalLegislation.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) || item.summary.toLowerCase().includes(search.toLowerCase());
+  useEffect(() => {
+    async function loadLegislation() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchFederalLegislation();
+        setLegislation(Array.isArray(data) ? data : []);
+      } catch (err) {
+        setError('Failed to load federal legislation.');
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadLegislation();
+    const timer = setTimeout(() => setMinLoading(false), 250);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const filteredLegislation = legislation.filter(item => {
+    const matchesSearch = (item.title?.toLowerCase() || '').includes(search.toLowerCase()) || (item.summary?.toLowerCase() || '').includes(search.toLowerCase());
     // Example filter logic: treat all as upcoming for demo
     return matchesSearch && (filter === 'All' || filter === 'Upcoming');
   });
 
+  if (loading || minLoading) {
+    return (
+      <div className="loading-spinner-container">
+        <div className="big-blue-spinner"></div>
+      </div>
+    );
+  }
   return (
     <div className="federal-page">
       <h2>Federal Legislation</h2>
@@ -51,17 +68,21 @@ const Federal = () => {
         />
       </div>
       <div className="legislation-list">
-        {filteredLegislation.map((item, idx) => (
-          <div key={idx} className="legislation-card big">
+        {error && <div className="error">{error}</div>}
+        {!error && filteredLegislation.map((item, idx) => (
+          <div key={item.id || idx} className="legislation-card big">
             <h3>{item.title}</h3>
-            <p><strong>Date:</strong> {item.date}</p>
-            <p><strong>Summary:</strong> {item.summary}</p>
-            <p><strong>Details:</strong> {item.details}</p>
+            <p><strong>Date:</strong> {item.date || item.billDate || 'N/A'}</p>
+            <p><strong>Summary:</strong> {item.summary || item.description}</p>
             <div className="card-actions">
               <button className="view-btn" onClick={() => { setModalData(item); setModalOpen(true); }}>View Legislation</button>
             </div>
           </div>
         ))}
+        {/* Add invisible card for spacing if only one card in row */}
+        {!error && filteredLegislation.length === 1 && (
+          <div className="legislation-card big invisible-card" aria-hidden="true"></div>
+        )}
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           {modalData && (
             <div>
@@ -71,7 +92,6 @@ const Federal = () => {
               </div>
               <p><strong>Date:</strong> {modalData.date}</p>
               <p><strong>Summary:</strong> {modalData.summary}</p>
-              <p><strong>Details:</strong> {modalData.details}</p>
               {!voting && !opinionMode ? (
                 <div className="modal-actions">
                   <button className="vote-btn" onClick={() => setVoting(true)}>Vote</button>
