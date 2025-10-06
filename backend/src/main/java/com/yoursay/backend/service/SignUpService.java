@@ -25,6 +25,7 @@ public class SignUpService {
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
         user.setZipcode(userRequest.getZipcode());
+        user.setState(userRequest.getState());
         user.setPreferences(userRequest.getPreferences());
         userRepository.save(user);
     }

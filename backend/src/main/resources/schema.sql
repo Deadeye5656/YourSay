@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     zipcode VARCHAR(5),
+    state VARCHAR(2),
     preferences VARCHAR(255)
 );
 
@@ -28,8 +29,8 @@ CREATE TABLE IF NOT EXISTS legislation (
     bill_date VARCHAR(10)
 );
 
-INSERT INTO users (email, password, zipcode, preferences) VALUES
-('test@test.com', '$2a$10$abcdefghijklmnopqrstuuNYVhuCzN8W/N3q6oBTpBoHaLLh6DgBG', '48315', 'Civil Rights')
+INSERT INTO users (email, password, zipcode, preferences, state) VALUES
+('test@test.com', '$2a$10$abcdefghijklmnopqrstuuNYVhuCzN8W/N3q6oBTpBoHaLLh6DgBG', '48315', 'Civil Rights', 'MI')
 ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO verification (email, code) VALUES

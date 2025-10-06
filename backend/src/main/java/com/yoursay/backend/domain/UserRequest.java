@@ -10,6 +10,7 @@ public class UserRequest {
     private String email;
     private String phoneNumber;
     private String zipcode;
+    private String state;
     private String preferences;
     private Integer verificationCode;
 }

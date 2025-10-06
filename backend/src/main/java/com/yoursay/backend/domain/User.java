@@ -16,5 +16,6 @@ public class User {
     private String password;
     private String email;
     private String zipcode;
+    private String state;
     private String preferences;
 }

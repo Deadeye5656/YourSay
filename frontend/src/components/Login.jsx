@@ -76,11 +76,6 @@ const Login = ({ onLoginSuccess }) => {
           {isLoading ? 'Logging in...' : 'Login'}
         </button>
         
-        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
-          <a href="#" style={{ color: '#3949ab', textDecoration: 'none' }}>
-            Forgot your password?
-          </a>
-        </p>
       </form>
     </div>
   );

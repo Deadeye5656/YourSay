@@ -24,7 +24,7 @@ const Navbar = ({ onLogin, onSignup, onLogout, isAuthenticated, onNavigate }) =>
         )}
         {isAuthenticated && (
           <>
-            <button className="navbar__btn" onClick={() => alert('Settings coming soon!')}>Settings</button>
+            <button className="navbar__btn" onClick={() => onNavigate('/settings')}>Settings</button>
             <button className="navbar__btn navbar__btn--logout" onClick={onLogout}>Log Out</button>
           </>
         )}

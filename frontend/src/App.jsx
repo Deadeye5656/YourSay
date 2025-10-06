@@ -6,6 +6,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import VerifyCode from './components/VerifyCode';
+import Settings from './components/Settings';
 import Local from './components/Local';
 import State from './components/State';
 import Federal from './components/Federal';
@@ -63,15 +64,6 @@ function App() {
         isAuthenticated={isAuthenticated}
         onNavigate={navigate}
       />
-        {/* Development-only button to toggle login state */}
-        <div style={{ position: 'fixed', top: 10, right: 10, zIndex: 9999 }}>
-          <button
-            onClick={() => setIsAuthenticated((prev) => !prev)}
-            style={{ padding: '0.5rem 1rem', background: '#007bff', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
-          >
-            {isAuthenticated ? 'Set Logged Out' : 'Set Logged In'} (Dev)
-          </button>
-        </div>
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -273,6 +265,7 @@ function App() {
           <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
           <Route path="/signup" element={<Signup onSignup={handleSignupSuccess} />} />
           <Route path="/verify-code" element={<VerifyCode onVerifySuccess={handleLoginSuccess} />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </main>
     </div>

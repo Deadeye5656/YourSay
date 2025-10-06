@@ -68,6 +68,7 @@ const VerifyCode = ({ onVerifySuccess }) => {
         email: pendingData.email,
         password: hashedPassword,
         zipcode: pendingData.zipcode,
+        state: pendingData.state || '',
         preferences: pendingData.preferences.join(','), // Convert array to comma-separated string
         phoneNumber: '', // Optional field, can be empty for now
         verificationCode: parseInt(codeStr) // The verification code entered by user
@@ -81,10 +82,11 @@ const VerifyCode = ({ onVerifySuccess }) => {
         localStorage.removeItem('pendingSignupData'); // Clean up
         
         // Store user data in localStorage for app use
+        localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('userEmail', pendingData.email);
         localStorage.setItem('userZipcode', pendingData.zipcode);
+        localStorage.setItem('userState', pendingData.state || '');
         localStorage.setItem('userPreferences', JSON.stringify(pendingData.preferences));
-        localStorage.setItem('userState', 'CA'); // Default state, should be derived from zipcode
         
         if (onVerifySuccess) onVerifySuccess();
         navigate('/'); // Navigate to home or dashboard

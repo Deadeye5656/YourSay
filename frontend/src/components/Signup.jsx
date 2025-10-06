@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendVerification } from '../api';
+import { US_STATES } from '../constants';
 import './Login.css';
 
 const topicsList = [
@@ -24,6 +25,7 @@ const Signup = ({ onSignup }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [zip, setZip] = useState('');
+  const [state, setState] = useState('');
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -59,8 +61,22 @@ const Signup = ({ onSignup }) => {
       setError('Please enter a valid 5-digit zip code.');
       return;
     }
+    if (!state) {
+      setError('Please select your state.');
+      return;
+    }
     setError('');
     setStep(4);
+  };
+
+  const handleStateSubmit = (e) => {
+    e.preventDefault();
+    if (!state) {
+      setError('Please select your state.');
+      return;
+    }
+    setError('');
+    setStep(5);
   };
 
   const handleTopicsSubmit = async (e) => {
@@ -79,6 +95,7 @@ const Signup = ({ onSignup }) => {
         email: email,
         password: password, // Store unhashed password for now
         zipcode: zip,
+        state: state,
         preferences: selectedTopics
       };
       
@@ -89,7 +106,7 @@ const Signup = ({ onSignup }) => {
       
       if (verificationResponse.success) {
         // Verification code sent successfully
-        if (onSignup) onSignup(email, password, zip, selectedTopics);
+        if (onSignup) onSignup(email, password, zip, state, selectedTopics);
         navigate('/verify-code');
       } else {
         // Handle error response from verification
@@ -157,13 +174,43 @@ const Signup = ({ onSignup }) => {
         )}
         {step === 3 && (
           <>
+            <select
+              value={state}
+              onChange={e => setState(e.target.value)}
+              style={{
+                width: '100%',
+                maxWidth: '320px',
+                padding: '0.75rem',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+                fontSize: '1rem',
+                backgroundColor: 'white',
+                color: '#333',
+                marginBottom: '1rem',
+                display: 'block',
+                margin: '0 auto 1rem auto'
+              }}
+            >
+              <option value="" style={{color: '#333'}}>Select your state</option>
+              {US_STATES.map(stateAbbr => (
+                <option key={stateAbbr} value={stateAbbr} style={{color: '#333'}}>
+                  {stateAbbr}
+                </option>
+              ))}
+            </select>
             <input
               type="text"
               placeholder="Zip Code"
               value={zip}
               maxLength={5}
               onChange={e => setZip(e.target.value.replace(/[^0-9]/g, ''))}
-              style={{marginBottom: '1rem'}}
+              style={{
+                marginBottom: '1rem',
+                width: '100%',
+                maxWidth: '320px',
+                display: 'block',
+                margin: '0 auto 1rem auto'
+              }}
             />
             <button type="submit" className="submit-button">Next</button>
           </>

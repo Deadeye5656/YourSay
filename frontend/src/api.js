@@ -59,12 +59,23 @@ export async function sendVerification(data) {
 }
 
 export async function updatePreferences(data) {
+  console.log("Updating preferences:", data);
   const res = await fetch(`${BASE_URL}/api/users/preferences`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  return res.json();
+  
+  // Backend returns plain text, not JSON
+  const responseText = await res.text();
+  console.log("Update preferences response:", responseText);
+  
+  // Return a consistent object format
+  if (res.ok) {
+    return { success: true, message: responseText };
+  } else {
+    return { success: false, message: responseText };
+  }
 }
 
 export async function fetchLocalLegislation(zipcode) {
