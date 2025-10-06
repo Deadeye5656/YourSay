@@ -6,7 +6,17 @@ export async function signupUser(data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  return res.json();
+  
+  // Backend returns plain text, not JSON
+  const responseText = await res.text();
+  console.log("Signup response text:", responseText);
+  
+  // Return a consistent object format
+  if (res.ok) {
+    return { success: true, message: responseText };
+  } else {
+    return { success: false, message: responseText };
+  }
 }
 
 export async function loginUser(data) {
@@ -19,12 +29,22 @@ export async function loginUser(data) {
 }
 
 export async function sendVerification(data) {
+  console.log("Sending verification to:", data);
   const res = await fetch(`${BASE_URL}/api/users/send-verification`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  return res.json();
+  
+  // Backend returns plain text, not JSON
+  const responseText = await res.text();
+  
+  // Return a consistent object format
+  if (res.ok) {
+    return { success: true, message: responseText };
+  } else {
+    return { success: false, message: responseText };
+  }
 }
 
 export async function updatePreferences(data) {

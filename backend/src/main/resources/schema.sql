@@ -37,7 +37,10 @@ INSERT INTO verification (email, code) VALUES
 ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO legislation (bill_id, title, description, bill_level, state, zipcode, city, bill_date) VALUES
-('123', 'bill title', 'bill description', 'LOCAL', 'MI', '12345', 'NYC', '2023-01-01'),
-('124', 'another bill title', 'another bill description', 'STATE', 'MI', '12345', NULL, '2023-02-01'),
-('125', 'federal bill title', 'federal bill description', 'FEDERAL', 'US', NULL, NULL, '2023-03-01')
+('123', 'bill title 1', 'bill descriptionlong testlong testlong testlong testlong testlong testlong test', 'LOCAL', 'MI', '48315', 'NYC', '2023-01-01'),
+('124', 'bill title 2', 'bill description', 'LOCAL', 'MI', '48315', 'NYC', '2023-01-01'),
+('125', 'another bill title 1', 'another bill description long test long testlong testlong testlong testlong testlong testlong testlong testlong testlong test', 'STATE', 'MI', '48315', NULL, '2023-02-01'),
+('126', 'another bill title 2', 'another bill descriptionlong testlong testlong testlong testlong testlong testlong test', 'STATE', 'MI', '48315', NULL, '2023-02-01'),
+('127', 'federal bill title 1', 'federal bill descriptionlong testlong testlong testlong testlong testlong testlong test', 'FEDERAL', 'US', NULL, NULL, '2023-03-01'),
+('128', 'federal bill title 2', 'federal bill descriptionlong testlong testlong testlong testlong testlong testlong testlong test', 'FEDERAL', 'US', NULL, NULL, '2023-03-01')
 ON CONFLICT (bill_id) DO NOTHING;

@@ -23,6 +23,16 @@ function App() {
     navigate('/signup');
   };
 
+  const handleSignupSuccess = (email, password, zip, selectedTopics) => {
+    // Store user data in localStorage for later use
+    localStorage.setItem('userEmail', email);
+    localStorage.setItem('userZipcode', zip);
+    // You might want to derive state from zipcode or ask user for state
+    // For now, we'll set a default and update it later when we have proper state mapping
+    localStorage.setItem('userState', 'CA'); // Default state, should be derived from zipcode
+    localStorage.setItem('userPreferences', JSON.stringify(selectedTopics));
+  };
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     navigate('/');
@@ -250,7 +260,7 @@ function App() {
             )
           } />
           <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup" element={<Signup onSignup={handleSignupSuccess} />} />
           <Route path="/verify-code" element={<VerifyCode onVerifySuccess={handleLoginSuccess} />} />
         </Routes>
       </main>

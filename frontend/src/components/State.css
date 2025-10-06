@@ -35,7 +35,7 @@
   align-items: center;
   justify-content: center;
   height: 60vh;
-  background: #f8f9fa;
+  background: transparent;
 }
 
 .big-blue-spinner {

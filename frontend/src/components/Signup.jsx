@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { sendVerification } from '../api';
 import './Login.css';
 
 const topicsList = [
@@ -25,6 +26,7 @@ const Signup = ({ onSignup }) => {
   const [zip, setZip] = useState('');
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleEmailSubmit = (e) => {
@@ -61,15 +63,44 @@ const Signup = ({ onSignup }) => {
     setStep(4);
   };
 
-  const handleTopicsSubmit = (e) => {
+  const handleTopicsSubmit = async (e) => {
     e.preventDefault();
     if (selectedTopics.length === 0) {
       setError('Please select at least one political topic.');
       return;
     }
+    
     setError('');
-    if (onSignup) onSignup(email, password, zip, selectedTopics);
-    navigate('/verify-code');
+    setIsLoading(true);
+    
+    try {
+      // Store signup data in localStorage for later use after verification
+      const signupData = {
+        email: email,
+        password: password, // Store unhashed password for now
+        zipcode: zip,
+        preferences: selectedTopics
+      };
+      
+      localStorage.setItem('pendingSignupData', JSON.stringify(signupData));
+      
+      // Send verification code
+      const verificationResponse = await sendVerification({ email: email });
+      
+      if (verificationResponse.success) {
+        // Verification code sent successfully
+        if (onSignup) onSignup(email, password, zip, selectedTopics);
+        navigate('/verify-code');
+      } else {
+        // Handle error response from verification
+        setError(verificationResponse.message || 'Failed to send verification code. Please try again.');
+      }
+    } catch (error) {
+      console.error('Verification sending error:', error);
+      setError('An error occurred while sending verification code. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleTopic = (topic) => {
@@ -159,7 +190,9 @@ const Signup = ({ onSignup }) => {
                 ))}
               </div>
             </div>
-            <button type="submit" className="submit-button">Create Account</button>
+            <button type="submit" className="submit-button" disabled={isLoading}>
+              {isLoading ? 'Sending Verification Code...' : 'Send Verification Code'}
+            </button>
           </>
         )}
         </form>
