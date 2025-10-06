@@ -20,12 +20,23 @@ export async function signupUser(data) {
 }
 
 export async function loginUser(data) {
+  console.log("Login attempt for:", data.email);
   const res = await fetch(`${BASE_URL}/api/users/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
-  return res.json();
+  
+  // Backend returns a boolean value
+  const isValidLogin = await res.json();
+  console.log("Login response:", isValidLogin);
+  
+  // Return a consistent object format
+  if (res.ok) {
+    return { success: isValidLogin, isAuthenticated: isValidLogin };
+  } else {
+    return { success: false, isAuthenticated: false, message: "Login failed" };
+  }
 }
 
 export async function sendVerification(data) {

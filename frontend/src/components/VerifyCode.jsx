@@ -3,6 +3,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs";
 import { sendVerification, signupUser } from "../api";
+import { BCRYPT_FIXED_SALT } from "../constants";
 
 const VerifyCode = ({ onVerifySuccess }) => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -59,9 +60,8 @@ const VerifyCode = ({ onVerifySuccess }) => {
       
       const pendingData = JSON.parse(pendingDataStr);
       
-      // Hash the password using bcrypt (one-way encryption)
-      const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(pendingData.password, saltRounds);
+      // Hash the password using bcrypt with fixed salt for consistency
+      const hashedPassword = await bcrypt.hash(pendingData.password, BCRYPT_FIXED_SALT);
       
       // Prepare the data to send to backend
       const signupData = {

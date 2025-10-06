@@ -9,11 +9,19 @@ import VerifyCode from './components/VerifyCode';
 import Local from './components/Local';
 import State from './components/State';
 import Federal from './components/Federal';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function App() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check localStorage for authentication state on app load
+  useEffect(() => {
+    const authState = localStorage.getItem('isAuthenticated');
+    if (authState === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const handleLogin = () => {
     navigate('/login');
@@ -35,6 +43,9 @@ function App() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    // Clear authentication data from localStorage
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userEmail');
     navigate('/');
   };
 

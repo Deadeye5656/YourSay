@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS legislation (
 );
 
 INSERT INTO users (email, password, zipcode, preferences) VALUES
-('test@test.com', 'password123', '12345', 'local,state')
+('test@test.com', '$2a$10$abcdefghijklmnopqrstuuNYVhuCzN8W/N3q6oBTpBoHaLLh6DgBG', '48315', 'Civil Rights')
 ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO verification (email, code) VALUES
