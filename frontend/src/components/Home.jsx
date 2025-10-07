@@ -100,6 +100,7 @@ const Home = () => {
           truncatedDescription: getTruncatedDescription(item.description),
           description: item.description,
           billLevel: item.billLevel,
+          category: item.category,
           state: item.state,
           city: item.city,
           zipcode: item.zipcode
@@ -118,6 +119,7 @@ const Home = () => {
           truncatedDescription: getTruncatedDescription(item.description),
           description: item.description,
           billLevel: item.billLevel,
+          category: item.category,
           state: item.state,
           city: item.city,
           zipcode: item.zipcode
@@ -209,6 +211,9 @@ const Home = () => {
               {legislationCards.map((card) => (
                 <div key={card.id} className="legislation-card">
                   <h3>{card.title}</h3>
+                  {card.category && (
+                    <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{card.category}</span></p>
+                  )}
                   <p><strong>Summary:</strong> {card.truncatedDescription}</p>
                 </div>
               ))}

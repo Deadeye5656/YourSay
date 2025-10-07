@@ -49,7 +49,15 @@ const Settings = () => {
     if (userState) setState(userState);
     if (userPreferences) {
       try {
-        const preferences = JSON.parse(userPreferences);
+        // Handle both string format (comma-separated) and JSON array format
+        let preferences;
+        if (userPreferences.startsWith('[')) {
+          // JSON array format (from signup)
+          preferences = JSON.parse(userPreferences);
+        } else {
+          // Comma-separated string format (from login response)
+          preferences = userPreferences.split(',').filter(pref => pref.trim());
+        }
         setSelectedTopics(preferences);
       } catch (e) {
         console.error('Error parsing user preferences:', e);

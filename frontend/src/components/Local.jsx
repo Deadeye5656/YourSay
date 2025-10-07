@@ -6,11 +6,25 @@ import { fetchLocalLegislation, addLocalLegislation } from '../api';
 
 const DEFAULT_ZIPCODE = '48067';
 
-const filterOptions = ['All', 'Upcoming', 'Past'];
-
+const categoryOptions = [
+  'All',
+  'My Preferences',
+  'Healthcare',
+  'Education',
+  'Economy',
+  'Environment',
+  'Immigration',
+  'Gun Control',
+  'Civil Rights',
+  'Foreign Policy',
+  'Taxes',
+  'Public Safety',
+  'Infrastructure',
+  'Other'
+];
 
 const Local = () => {
-  const [filter, setFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState(null);
@@ -32,12 +46,33 @@ const Local = () => {
   const [error, setError] = useState(null);
   const [minLoading, setMinLoading] = useState(true);
 
+  // Get user preferences for filtering
+  const getUserPreferences = () => {
+    const userPreferences = localStorage.getItem('userPreferences');
+    if (userPreferences) {
+      try {
+        // Handle both string format (comma-separated) and JSON array format
+        if (userPreferences.startsWith('[')) {
+          return JSON.parse(userPreferences);
+        } else {
+          return userPreferences.split(',').filter(pref => pref.trim());
+        }
+      } catch (e) {
+        console.error('Error parsing user preferences:', e);
+        return [];
+      }
+    }
+    return [];
+  };
+
   useEffect(() => {
     async function loadLegislation() {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchLocalLegislation(DEFAULT_ZIPCODE);
+        // Get user's zipcode from localStorage, fallback to default
+        const userZipcode = localStorage.getItem('userZipcode') || DEFAULT_ZIPCODE;
+        const data = await fetchLocalLegislation(userZipcode);
         setLegislation(Array.isArray(data) ? data : []);
       } catch (err) {
         setError('Failed to load local legislation.');
@@ -53,8 +88,18 @@ const Local = () => {
 
   const filteredLegislation = legislation.filter(item => {
     const matchesSearch = (item.title?.toLowerCase() || '').includes(search.toLowerCase()) || (item.description?.toLowerCase() || '').includes(search.toLowerCase());
-    // Example filter logic: treat all as upcoming for demo
-    return matchesSearch && (filter === 'All' || filter === 'Upcoming');
+    
+    let matchesCategory = true;
+    if (categoryFilter === 'All') {
+      matchesCategory = true;
+    } else if (categoryFilter === 'My Preferences') {
+      const userPreferences = getUserPreferences();
+      matchesCategory = userPreferences.length > 0 && userPreferences.includes(item.category);
+    } else {
+      matchesCategory = item.category === categoryFilter;
+    }
+    
+    return matchesSearch && matchesCategory;
   });
 
   if (loading || minLoading) {
@@ -71,35 +116,31 @@ const Local = () => {
         <div className="local-page-subtitle">Community Laws & Municipal Proposals</div>
       </div>
       <div className="local-page-content">
-        {/* Only show filter and search bar if there are cards to show */}
-        {(!error && filteredLegislation.length > 0) && (
-          <div className="filter-bar">
-            <select value={filter} onChange={e => setFilter(e.target.value)} className="filter-dropdown">
-              {filterOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
-            <input
-              type="text"
-              className="search-bar"
-              placeholder="Search legislation..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-          </div>
-        )}
+        {/* Filter bar - always show */}
+        <div className="filter-bar">
+          <select value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)} className="filter-dropdown">
+            {categoryOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+          </select>
+          <input
+            type="text"
+            className="search-bar"
+            placeholder="Search legislation..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <button className="add-legislation-btn" onClick={() => setAddModalOpen(true)}>Add New Legislation</button>
+        </div>
         <div className="legislation-list">
           {error && <div className="error">{error}</div>}
           {!error && filteredLegislation.length === 0 && (
-            <div className="no-legislation-prompt">
-              <p>
-                There are currently no local legislations in our records.<br />
-                Please add any upcoming proposals or initiatives in your local municipalities to help keep the community informed.
-              </p>
-              <button className="add-legislation-btn" onClick={() => setAddModalOpen(true)}>Add New Legislation</button>
-            </div>
+            <div className="no-results">No local legislation found.</div>
           )}
           {!error && filteredLegislation.map((item, idx) => (
             <div key={item.id || idx} className="legislation-card big">
               <h3>{item.title}</h3>
+              {item.category && (
+                <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{item.category}</span></p>
+              )}
               <p><strong>Last Updated:</strong> {item.billDate || item.date || 'N/A'}</p>
               <p><strong>Summary:</strong> {item.description || item.summary}</p>
               <div className="card-actions">
@@ -107,10 +148,6 @@ const Local = () => {
               </div>
             </div>
           ))}
-          {/* Add invisible card for spacing if only one card in row */}
-          {!error && filteredLegislation.length === 1 && (
-            <div className="legislation-card big invisible-card" aria-hidden="true"></div>
-          )}
         </div>
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           {modalData && (
@@ -120,6 +157,9 @@ const Local = () => {
                 <button className="modal-close modern-close" onClick={() => { setModalOpen(false); setVoting(false); setVote(null); setOpinionMode(false); setOpinionText(''); }}>&times;</button>
               </div>
               <div className="modal-content-body">
+                {modalData.category && (
+                  <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{modalData.category}</span></p>
+                )}
                 <p><strong>Last Updated:</strong> {modalData.billDate}</p>
                 <p><strong>Summary:</strong> {modalData.description}</p>
                 {!voting && !opinionMode ? (

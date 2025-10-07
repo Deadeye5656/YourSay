@@ -57,9 +57,9 @@ public class LegislationController {
 
     // 4. Check login credentials
     @PostMapping("/users/login")
-    public ResponseEntity<Boolean> checkLogin(@RequestBody LoginRequest request) {
-        boolean isCorrectPassword = loginService.checkPassword(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(isCorrectPassword);
+    public ResponseEntity<LoginResponse> checkLogin(@RequestBody LoginRequest request) {
+        LoginResponse loginResponse = loginService.checkPassword(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok(loginResponse);
     }
 
     // 5. Update zipcode and preferences

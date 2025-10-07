@@ -44,9 +44,12 @@ function App() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    // Clear authentication data from localStorage
+    // Clear all user data from localStorage
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userZipcode');
+    localStorage.removeItem('userState');
+    localStorage.removeItem('userPreferences');
     navigate('/');
   };
 

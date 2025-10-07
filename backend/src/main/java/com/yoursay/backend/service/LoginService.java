@@ -1,5 +1,6 @@
 package com.yoursay.backend.service;
 
+import com.yoursay.backend.domain.LoginResponse;
 import com.yoursay.backend.domain.User;
 import com.yoursay.backend.domain.UserRequest;
 import com.yoursay.backend.domain.Verification;
@@ -18,8 +19,16 @@ public class LoginService {
         this.userRepository = userRepository;
     }
 
-    public boolean checkPassword(String email, String password) {
+    public LoginResponse checkPassword(String email, String password) {
         User user = userRepository.findByEmail(email);
-        return user != null && user.getPassword().equals(password);
+        LoginResponse response = new LoginResponse();
+        if (user != null && user.getPassword().equals(password)) {
+            response.setEmail(user.getEmail());
+            response.setZipcode(user.getZipcode());
+            response.setState(user.getState());
+            response.setPreferences(user.getPreferences());
+            response.setAccessGranted(true);
+        }
+        return response;
     }
 }

@@ -26,6 +26,17 @@ const VerifyCode = ({ onVerifySuccess }) => {
     }
   };
 
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+    if (pastedData.length >= 6) {
+      const newCode = pastedData.slice(0, 6).split('');
+      setCode(newCode);
+      // Focus the last input
+      inputsRef.current[5].focus();
+    }
+  };
+
   const handleKeyDown = (e, idx) => {
     if (e.key === "Backspace") {
       if (code[idx]) {
@@ -158,6 +169,7 @@ const VerifyCode = ({ onVerifySuccess }) => {
               value={digit}
               onChange={e => handleChange(e, idx)}
               onKeyDown={e => handleKeyDown(e, idx)}
+              onPaste={handlePaste}
               style={{
                 width: '3rem',
                 height: '3rem',

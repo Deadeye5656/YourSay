@@ -11,4 +11,5 @@ public class LocalLegislationRequest {
     private String state;
     private String title;
     private String description;
+    private String category;
 }

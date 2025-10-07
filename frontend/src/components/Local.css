@@ -55,9 +55,10 @@
 
 /* Page Content Container */
 .local-page-content {
-  max-width: 1200px;
+  width: 950px;
   margin: 0 auto;
   padding: 0 2rem;
+  min-height: 60vh; /* Ensure consistent height even with no content */
 }
 
 /* Add New Legislation Button Theme Style */
@@ -70,9 +71,13 @@
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 1.5rem;
   box-shadow: 0 2px 8px rgba(30, 30, 60, 0.08);
   transition: all 0.3s ease;
+}
+
+/* Add margin only when not in filter bar */
+.add-legislation-section .add-legislation-btn {
+  margin-top: 1.5rem;
 }
 
 .add-legislation-btn:hover {
@@ -159,7 +164,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  justify-content: center;
+  justify-content: flex-start;
   margin-bottom: 3rem;
 }
 

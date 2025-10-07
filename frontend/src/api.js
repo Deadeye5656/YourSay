@@ -27,13 +27,22 @@ export async function loginUser(data) {
     body: JSON.stringify(data),
   });
   
-  // Backend returns a boolean value
-  const isValidLogin = await res.json();
-  console.log("Login response:", isValidLogin);
-  
-  // Return a consistent object format
   if (res.ok) {
-    return { success: isValidLogin, isAuthenticated: isValidLogin };
+    // Backend now returns a LoginResponse object
+    const loginResponse = await res.json();
+    console.log("Login response:", loginResponse);
+    
+    // Return the response with success flag based on accessGranted
+    return { 
+      success: loginResponse.accessGranted, 
+      isAuthenticated: loginResponse.accessGranted,
+      userData: loginResponse.accessGranted ? {
+        email: loginResponse.email,
+        zipcode: loginResponse.zipcode,
+        state: loginResponse.state,
+        preferences: loginResponse.preferences
+      } : null
+    };
   } else {
     return { success: false, isAuthenticated: false, message: "Login failed" };
   }

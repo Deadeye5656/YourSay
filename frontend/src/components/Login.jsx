@@ -35,16 +35,18 @@ const Login = ({ onLoginSuccess }) => {
       const response = await loginUser(loginData);
       
       if (response.success && response.isAuthenticated) {
-        // Login successful - store user data and call success callback
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('isAuthenticated', 'true');
+        // Login successful - store user data from the response
+        const userData = response.userData;
         
-        // TODO: Fetch user preferences and other data from backend if needed
-        // For now, we'll rely on the data that might already be in localStorage
+        localStorage.setItem('userEmail', userData.email);
+        localStorage.setItem('userZipcode', userData.zipcode);
+        localStorage.setItem('userState', userData.state);
+        localStorage.setItem('userPreferences', userData.preferences);
+        localStorage.setItem('isAuthenticated', 'true');
         
         if (onLoginSuccess) onLoginSuccess();
       } else {
-        // Login failed
+        // Login failed - accessGranted was false
         setError('Invalid email or password. Please try again.');
       }
     } catch (error) {

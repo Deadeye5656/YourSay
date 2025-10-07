@@ -22,4 +22,5 @@ public class Legislation {
     private String zipcode;
     private String city;
     private String billDate;
+    private String category;
 }

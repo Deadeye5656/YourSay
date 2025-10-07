@@ -44,6 +44,55 @@ public class LegislationImportService {
         this.legislationRepository = legislationRepository;
     }
 
+    // Topic keyword arrays
+    private static final String[] HEALTHCARE_KEYWORDS = {"healthcare", "medicare", "medicaid", "insurance", "hospital", "doctor", "nurse", "pharmaceutical", "mental", "public", "medical", "prescription", "clinic", "patient", "surgery", "dental", "vision", "wellness", "primary", "specialist", "emergency", "plan", "coverage", "drug", "treatment", "diagnosis", "preventive", "system", "reform", "telemedicine", "technology", "epidemic", "pandemic", "vaccine", "immunization", "equity", "long-term", "nursing"};
+    private static final String[] EDUCATION_KEYWORDS = {"education", "school", "student", "teacher", "university", "college", "curriculum", "classroom", "scholarship", "loan", "tuition", "literacy", "stem", "elementary", "secondary", "k-12", "public", "private", "charter", "voucher", "financial", "grant", "degree", "diploma", "testing", "assessment", "special", "training", "remote", "distance", "textbook", "funding", "lunch", "after", "early", "preschool", "head start", "reform"};
+    private static final String[] ECONOMY_KEYWORDS = {"economy", "job", "employment", "unemployment", "gdp", "inflation", "recession", "market", "trade", "business", "industry", "wage", "income", "growth", "stimulus", "minimum", "labor", "workforce", "manufacturing", "export", "import", "tariff", "small", "entrepreneur", "investment", "stock", "banking", "finance", "credit", "debt", "consumer", "poverty", "development", "subsidy", "bailout", "fiscal", "monetary", "interest", "training"};
+    private static final String[] ENVIRONMENT_KEYWORDS = {"environment", "climate", "pollution", "emission", "carbon", "renewable", "sustainability", "conservation", "wildlife", "recycling", "green", "energy", "warming", "epa", "air", "water", "waste", "toxic", "hazardous", "solar", "wind", "geothermal", "hydroelectric", "biodiversity", "ecosystem", "deforestation", "reforestation", "ocean", "marine", "endangered", "resource", "fossil", "oil", "gas", "coal", "change", "protection", "justice"};
+    private static final String[] IMMIGRATION_KEYWORDS = {"immigration", "border", "visa", "refugee", "asylum", "citizenship", "deportation", "migrant", "green", "daca", "undocumented", "immigrant", "naturalization", "reform", "detention", "customs", "patrol", "sanctuary", "separation", "permit", "guest", "law", "policy", "residency", "ban", "status", "court", "enforcement", "services"};
+    private static final String[] GUN_CONTROL_KEYWORDS = {"gun", "firearm", "weapon", "background", "second", "nra", "shooting", "assault", "concealed", "violence", "ammunition", "law", "safety", "rights", "ban", "magazine", "open", "registration", "license", "red", "trafficking", "show", "dealer", "control", "mass", "school", "self-defense", "stand", "buyback"};
+    private static final String[] CIVIL_RIGHTS_KEYWORDS = {"civil", "equality", "discrimination", "racism", "sexism", "lgbtq", "voting", "freedom", "justice", "inclusion", "diversity", "human", "protection", "affirmative", "hate", "disability", "gender", "racial", "religious", "liberties", "opportunity", "anti-discrimination", "marriage", "segregation", "integration", "minority", "social", "women", "transgender"};
+    private static final String[] FOREIGN_POLICY_KEYWORDS = {"foreign", "international", "diplomacy", "treaty", "sanction", "war", "military", "defense", "alliance", "united", "agreement", "embassy", "aid", "ambassador", "relations", "law", "peacekeeping", "nato", "conflict", "arms", "nuclear", "counterterrorism", "investment", "overseas", "border", "cooperation", "humanitarian", "affairs", "state", "geopolitics"};
+    private static final String[] TAXES_KEYWORDS = {"tax", "irs", "income", "corporate", "cut", "reform", "deduction", "revenue", "taxpayer", "rate", "credit", "return", "property", "sales", "excise", "capital", "shelter", "evasion", "compliance", "code", "bracket", "withholding", "policy", "incentive", "estate", "inheritance", "refund"};
+    private static final String[] PUBLIC_SAFETY_KEYWORDS = {"public", "crime", "police", "firefighter", "emergency", "disaster", "rescue", "first", "law", "safety", "security", "prevention", "ambulance", "paramedic", "911", "community", "health", "relief", "evacuation", "hazard", "threat", "risk", "order", "regulation", "fire", "traffic", "school", "domestic", "child"};
+    private static final String[] INFRASTRUCTURE_KEYWORDS = {"infrastructure", "road", "bridge", "transportation", "transit", "rail", "airport", "port", "water", "sewer", "broadband", "utility", "construction", "maintenance", "highway", "works", "funding", "pipeline", "electric", "telecommunications", "fiber", "project", "investment", "mass", "repair", "stormwater", "wastewater", "modernization", "resilience", "planning"};
+    private static final String[] OTHER_KEYWORDS = {"miscellaneous", "other", "general", "various", "uncategorized", "misc", "not", "unspecified", "catch-all", "additional", "extra", "supplemental"};
+
+    private static final Map<String, String[]> TOPIC_KEYWORDS = Map.ofEntries(
+        Map.entry("Healthcare", HEALTHCARE_KEYWORDS),
+        Map.entry("Education", EDUCATION_KEYWORDS),
+        Map.entry("Economy", ECONOMY_KEYWORDS),
+        Map.entry("Environment", ENVIRONMENT_KEYWORDS),
+        Map.entry("Immigration", IMMIGRATION_KEYWORDS),
+        Map.entry("Gun Control", GUN_CONTROL_KEYWORDS),
+        Map.entry("Civil Rights", CIVIL_RIGHTS_KEYWORDS),
+        Map.entry("Foreign Policy", FOREIGN_POLICY_KEYWORDS),
+        Map.entry("Taxes", TAXES_KEYWORDS),
+        Map.entry("Public Safety", PUBLIC_SAFETY_KEYWORDS),
+        Map.entry("Infrastructure", INFRASTRUCTURE_KEYWORDS),
+        Map.entry("Other", OTHER_KEYWORDS)
+    );
+
+    private String determineCategory(String description) {
+        if (description == null || description.isEmpty()) return "Other";
+        String descLower = description.toLowerCase();
+        String bestCategory = "Other";
+        int maxMatches = 0;
+        for (Map.Entry<String, String[]> entry : TOPIC_KEYWORDS.entrySet()) {
+            int matches = 0;
+            for (String keyword : entry.getValue()) {
+                if (descLower.contains(keyword.toLowerCase())) {
+                    matches++;
+                }
+            }
+            if (matches > maxMatches) {
+                maxMatches = matches;
+                bestCategory = entry.getKey();
+            }
+        }
+        return bestCategory;
+    }
+
     public boolean addLocalLegislation(LocalLegislationRequest legislationRequest) {
         Legislation legislation = new Legislation();
         legislation.setBill_id(null);
@@ -55,6 +104,7 @@ public class LegislationImportService {
         legislation.setZipcode(legislationRequest.getZipcode());
         String currentDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
         legislation.setBillDate(currentDate);
+        legislation.setCategory(determineCategory(legislationRequest.getDescription()));
         try {
             legislationRepository.save(legislation);
             return true;
@@ -145,6 +195,9 @@ public class LegislationImportService {
         }
         legislation.setState(state);
         legislation.setBillDate(data.getString("status_date"));
+        // Set category based on description
+        String description = data.getString("description");
+        legislation.setCategory(new LegislationImportService(null).determineCategory(description));
         return legislation;
     }
 

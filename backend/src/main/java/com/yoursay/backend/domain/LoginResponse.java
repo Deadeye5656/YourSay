@@ -5,7 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginRequest {
-    private String password;
+public class LoginResponse {
     private String email;
+    private String zipcode;
+    private String state;
+    private String preferences;
+    private boolean accessGranted;
 }
