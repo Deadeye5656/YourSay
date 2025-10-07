@@ -36,9 +36,30 @@
   width: 100%;
   max-width: 320px;
   transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
 .login-form input:focus {
+  outline: none;
+  border-color: #3949ab;
+  box-shadow: 0 0 0 2px rgba(57, 73, 171, 0.1);
+}
+
+.login-form select {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background: #fff;
+  color: #222;
+  width: 100%;
+  max-width: 320px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.login-form select:focus {
   outline: none;
   border-color: #3949ab;
   box-shadow: 0 0 0 2px rgba(57, 73, 171, 0.1);

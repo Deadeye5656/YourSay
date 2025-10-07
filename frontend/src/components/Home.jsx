@@ -84,7 +84,7 @@ const Home = () => {
       try {
         setLoading(true);
         // Get user's zipcode and state from localStorage or use defaults
-        const userZipcode = localStorage.getItem('userZipcode') || '48315'; // Default zipcode (Beverly Hills, CA)
+        const userZipcode = localStorage.getItem('userZipcode') || '48315'; // Default zipcode
         const userState = localStorage.getItem('userState') || 'MI'; // Default state
         
         console.log('Fetching random legislation for:', { userZipcode, userState });

@@ -153,7 +153,8 @@ const Settings = () => {
               borderRadius: '4px',
               fontSize: '1rem',
               backgroundColor: 'white',
-              color: '#333'
+              color: '#333',
+              boxSizing: 'border-box'
             }}
           >
             <option value="" style={{color: '#333'}}>Select your state</option>
@@ -176,6 +177,16 @@ const Settings = () => {
             value={zipcode}
             maxLength={5}
             onChange={e => setZipcode(e.target.value.replace(/[^0-9]/g, ''))}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              fontSize: '1rem',
+              backgroundColor: 'white',
+              color: '#333',
+              boxSizing: 'border-box'
+            }}
           />
         </div>
 

@@ -177,19 +177,6 @@ const Signup = ({ onSignup }) => {
             <select
               value={state}
               onChange={e => setState(e.target.value)}
-              style={{
-                width: '100%',
-                maxWidth: '320px',
-                padding: '0.75rem',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
-                fontSize: '1rem',
-                backgroundColor: 'white',
-                color: '#333',
-                marginBottom: '1rem',
-                display: 'block',
-                margin: '0 auto 1rem auto'
-              }}
             >
               <option value="" style={{color: '#333'}}>Select your state</option>
               {US_STATES.map(stateAbbr => (
@@ -204,13 +191,6 @@ const Signup = ({ onSignup }) => {
               value={zip}
               maxLength={5}
               onChange={e => setZip(e.target.value.replace(/[^0-9]/g, ''))}
-              style={{
-                marginBottom: '1rem',
-                width: '100%',
-                maxWidth: '320px',
-                display: 'block',
-                margin: '0 auto 1rem auto'
-              }}
             />
             <button type="submit" className="submit-button">Next</button>
           </>
