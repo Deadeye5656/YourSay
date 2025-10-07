@@ -133,6 +133,7 @@ public class LegislationImportService {
             boolean secondPass = false;
             int billsToSkip = 10;
             for (; total < totalBills; index-=billsToSkip) {
+                System.out.println(state);
                 try {
                     if (index < 0) {
                         if (secondPass) {
