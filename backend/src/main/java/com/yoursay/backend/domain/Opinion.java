@@ -5,17 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "opinions")
 @Getter
 @Setter
-public class Vote {
+public class Opinion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String password;
     private String email;
-    private String zipcode;
-    private String state;
-    private String preferences;
+    private Integer bill_id;
+    private String opinion;
 }

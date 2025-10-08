@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import './Local.css';
 
-import { fetchLocalLegislation, addLocalLegislation } from '../api';
+import { fetchLocalLegislation, addLocalLegislation, addVote, addOpinion, getUserVotes, getUserOpinions } from '../api';
 
 const DEFAULT_ZIPCODE = '48067';
 
@@ -45,6 +45,10 @@ const Local = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [minLoading, setMinLoading] = useState(true);
+  const [userVotes, setUserVotes] = useState([]);
+  const [userOpinions, setUserOpinions] = useState([]);
+  const [statusMessage, setStatusMessage] = useState('');
+  const [statusType, setStatusType] = useState(''); // 'success' or 'error'
 
   // Get user preferences for filtering
   const getUserPreferences = () => {
@@ -65,6 +69,120 @@ const Local = () => {
     return [];
   };
 
+  // Get user email from localStorage
+  const getUserEmail = () => {
+    return localStorage.getItem('userEmail') || '';
+  };
+
+  // Load user votes and opinions
+  const loadUserData = async () => {
+    const userEmail = getUserEmail();
+    if (!userEmail) return;
+
+    try {
+      const [votesResult, opinionsResult] = await Promise.all([
+        getUserVotes(userEmail),
+        getUserOpinions(userEmail)
+      ]);
+
+      if (votesResult.success) {
+        setUserVotes(votesResult.votes);
+      }
+      
+      if (opinionsResult.success) {
+        setUserOpinions(opinionsResult.opinions);
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  };
+
+  // Check if user has voted on a bill
+  const getUserVoteForBill = (billId) => {
+    return userVotes.find(vote => vote.bill_id === billId);
+  };
+
+  // Check if user has opinion on a bill
+  const getUserOpinionForBill = (billId) => {
+    return userOpinions.find(opinion => opinion.bill_id === billId);
+  };
+
+  // Show status message
+  const showStatusMessage = (message, type) => {
+    setStatusMessage(message);
+    setStatusType(type);
+    setTimeout(() => {
+      setStatusMessage('');
+      setStatusType('');
+    }, 3000);
+  };
+
+  // Handle vote submission
+  const handleVoteSubmit = async () => {
+    const userEmail = getUserEmail();
+    if (!userEmail) {
+      showStatusMessage('Please log in to vote', 'error');
+      return;
+    }
+
+    if (!vote || !modalData) return;
+
+    try {
+      const voteData = {
+        email: userEmail,
+        bill_id: modalData.bill_id || modalData.id,
+        vote: vote === 'yay'
+      };
+
+      const result = await addVote(voteData);
+      if (result.success) {
+        showStatusMessage(`Vote submitted: ${vote.toUpperCase()}`, 'success');
+        setVoting(false);
+        setVote(null);
+        // Reload user data to update UI
+        await loadUserData();
+      } else {
+        showStatusMessage(`Failed to submit vote: ${result.message}`, 'error');
+      }
+    } catch (error) {
+      console.error('Error submitting vote:', error);
+      showStatusMessage('Error submitting vote. Please try again.', 'error');
+    }
+  };
+
+  // Handle opinion submission
+  const handleOpinionSubmit = async () => {
+    const userEmail = getUserEmail();
+    if (!userEmail) {
+      showStatusMessage('Please log in to submit an opinion', 'error');
+      return;
+    }
+
+    if (opinionText.trim().length < 50 || !modalData) return;
+
+    try {
+      const opinionData = {
+        email: userEmail,
+        bill_id: modalData.bill_id || modalData.id,
+        opinion: opinionText.trim()
+      };
+
+      const result = await addOpinion(opinionData);
+      if (result.success) {
+        showStatusMessage('Opinion submitted successfully!', 'success');
+        setOpinionMode(false);
+        setOpinionText('');
+        // Reload user data to update UI
+        await loadUserData();
+      } else {
+        showStatusMessage(`Failed to submit opinion: ${result.message}`, 'error');
+      }
+    } catch (error) {
+      console.error('Error submitting opinion:', error);
+      showStatusMessage('Error submitting opinion. Please try again.', 'error');
+    }
+  };
+
   useEffect(() => {
     async function loadLegislation() {
       setLoading(true);
@@ -74,6 +192,8 @@ const Local = () => {
         const userZipcode = localStorage.getItem('userZipcode') || DEFAULT_ZIPCODE;
         const data = await fetchLocalLegislation(userZipcode);
         setLegislation(Array.isArray(data) ? data : []);
+        // Load user data after legislation is loaded
+        await loadUserData();
       } catch (err) {
         setError('Failed to load local legislation.');
       } finally {
@@ -131,23 +251,49 @@ const Local = () => {
           <button className="add-legislation-btn" onClick={() => setAddModalOpen(true)}>Add New Legislation</button>
         </div>
         <div className="legislation-list">
+          {statusMessage && (
+            <div className={`status-message ${statusType}`}>
+              {statusMessage}
+            </div>
+          )}
           {error && <div className="error">{error}</div>}
           {!error && filteredLegislation.length === 0 && (
             <div className="no-results">No local legislation found.</div>
           )}
-          {!error && filteredLegislation.map((item, idx) => (
-            <div key={item.id || idx} className="legislation-card big">
-              <h3>{item.title}</h3>
-              {item.category && (
-                <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{item.category}</span></p>
-              )}
-              <p><strong>Last Updated:</strong> {item.billDate || item.date || 'N/A'}</p>
-              <p><strong>Summary:</strong> {item.description || item.summary}</p>
-              <div className="card-actions">
-                <button className="view-btn" onClick={() => { setModalData(item); setModalOpen(true); }}>View Legislation</button>
+          {!error && filteredLegislation.map((item, idx) => {
+            const billId = item.bill_id || item.id;
+            const userVote = getUserVoteForBill(billId);
+            const userOpinion = getUserOpinionForBill(billId);
+            
+            return (
+              <div key={item.id || idx} className="legislation-card big">
+                <h3>{item.title}</h3>
+                {item.category && (
+                  <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{item.category}</span></p>
+                )}
+                <p><strong>Last Updated:</strong> {item.billDate || item.date || 'N/A'}</p>
+                <p><strong>Summary:</strong> {item.description || item.summary}</p>
+                
+                {/* Status indicators */}
+                <div className="user-status">
+                  {userVote && (
+                    <span className={`status-badge vote-status ${userVote.vote ? 'yay' : 'nay'}`}>
+                      {userVote.vote ? '✓ Voted YAY' : '✗ Voted NAY'}
+                    </span>
+                  )}
+                  {userOpinion && (
+                    <span className="status-badge opinion-status">
+                      💭 Opinion Submitted
+                    </span>
+                  )}
+                </div>
+                
+                <div className="card-actions">
+                  <button className="view-btn" onClick={() => { setModalData(item); setModalOpen(true); }}>View Legislation</button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           {modalData && (
@@ -182,7 +328,7 @@ const Local = () => {
                     </div>
                     <div className="modal-actions modern-actions">
                       <button className="btn-secondary" onClick={() => { setVoting(false); setVote(null); }}>Back</button>
-                      <button className="btn-primary" disabled={!vote} onClick={() => alert(`Vote submitted: ${vote}`)}>Submit</button>
+                      <button className="btn-primary" disabled={!vote} onClick={handleVoteSubmit}>Submit</button>
                     </div>
                   </>
                 )}
@@ -203,7 +349,7 @@ const Local = () => {
                     )}
                     <div className="modal-actions modern-actions">
                       <button className="btn-secondary" onClick={() => { setOpinionMode(false); setOpinionText(''); }}>Back</button>
-                      <button className="btn-primary" disabled={opinionText.trim().length < 50} onClick={() => alert(`Opinion submitted: ${opinionText}`)}>Submit</button>
+                      <button className="btn-primary" disabled={opinionText.trim().length < 50} onClick={handleOpinionSubmit}>Submit</button>
                     </div>
                   </>
                 )}

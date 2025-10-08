@@ -448,6 +448,32 @@
   padding-bottom: 0;
 }
 
+/* Custom scrollbar styling for modal content */
+.modal-content-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content-body::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.modal-content-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.modal-content-body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #3949ab 0%, #ffca28 100%);
+}
+
+/* Firefox scrollbar styling */
+.modal-content-body {
+  scrollbar-width: thin;
+  scrollbar-color: #3949ab #f8f9fa;
+}
+
 .modal-content-body .modal-actions {
   margin-top: auto;
   padding-top: 1rem;

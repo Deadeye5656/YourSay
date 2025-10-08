@@ -18,15 +18,17 @@ public class LegislationController {
     private final EmailSenderService emailService;
     private final LegislationImportService legislationImportService;
     private final FetchLegislationService fetchLegislationService;
+    private final OpinionVoteService opinionVoteService;
 
     @Autowired
-    public LegislationController(SignUpService signUpService, PreferencesService preferencesService, LoginService loginService, EmailSenderService emailService, LegislationImportService legislationImportService, FetchLegislationService fetchLegislationService) {
+    public LegislationController(SignUpService signUpService, PreferencesService preferencesService, LoginService loginService, EmailSenderService emailService, LegislationImportService legislationImportService, FetchLegislationService fetchLegislationService, OpinionVoteService opinionVoteService) {
         this.signUpService = signUpService;
         this.preferencesService = preferencesService;
         this.loginService = loginService;
         this.emailService = emailService;
         this.legislationImportService = legislationImportService;
         this.fetchLegislationService = fetchLegislationService;
+        this.opinionVoteService = opinionVoteService;
     }
 
     // 1. Daily legislation data fetch
@@ -102,5 +104,33 @@ public class LegislationController {
     public ResponseEntity<Boolean> addLocalLegislation(@RequestBody LocalLegislationRequest request) {
         boolean success = legislationImportService.addLocalLegislation(request);
         return ResponseEntity.ok(success);
+    }
+
+    // 11. Add vote on bill
+    @PostMapping("/legislation/vote")
+    public ResponseEntity<Boolean> addVoteOnBill(@RequestBody VoteRequest request) {
+        boolean success = opinionVoteService.addVoteFromRequest(request);
+        return ResponseEntity.ok(success);
+    }
+
+    // 10. Add opinion on bill
+    @PostMapping("/legislation/opinion")
+    public ResponseEntity<Boolean> addOpinionOnBill(@RequestBody OpinionRequest request) {
+        boolean success = opinionVoteService.addOpinionFromRequest(request);
+        return ResponseEntity.ok(success);
+    }
+
+    // 11. Add vote on bill
+    @GetMapping("/legislation/vote/{email}")
+    public ResponseEntity<List<Vote>> getVotes(@PathVariable String email) {
+        List<Vote> votes = opinionVoteService.getVotes(email);
+        return ResponseEntity.ok(votes);
+    }
+
+    // 10. Add opinion on bill
+    @GetMapping("/legislation/opinion/{email}")
+    public ResponseEntity<List<Opinion>> getOpinions(@PathVariable String email) {
+        List<Opinion> opinions = opinionVoteService.getOpinions(email);
+        return ResponseEntity.ok(opinions);
     }
 }

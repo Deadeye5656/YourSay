@@ -117,3 +117,63 @@ export async function addLocalLegislation(data) {
   });
   return res.json();
 }
+
+export async function addVote(data) {
+  console.log("Adding vote:", data);
+  const res = await fetch(`${BASE_URL}/api/legislation/vote`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  
+  if (res.ok) {
+    const result = await res.json();
+    return { success: true, result };
+  } else {
+    const errorText = await res.text();
+    return { success: false, message: errorText };
+  }
+}
+
+export async function addOpinion(data) {
+  console.log("Adding opinion:", data);
+  const res = await fetch(`${BASE_URL}/api/legislation/opinion`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  
+  if (res.ok) {
+    const result = await res.json();
+    return { success: true, result };
+  } else {
+    const errorText = await res.text();
+    return { success: false, message: errorText };
+  }
+}
+
+export async function getUserVotes(email) {
+  console.log("Fetching votes for user:", email);
+  const res = await fetch(`${BASE_URL}/api/legislation/vote/${encodeURIComponent(email)}`);
+  
+  if (res.ok) {
+    const votes = await res.json();
+    return { success: true, votes };
+  } else {
+    const errorText = await res.text();
+    return { success: false, message: errorText };
+  }
+}
+
+export async function getUserOpinions(email) {
+  console.log("Fetching opinions for user:", email);
+  const res = await fetch(`${BASE_URL}/api/legislation/opinion/${encodeURIComponent(email)}`);
+  
+  if (res.ok) {
+    const opinions = await res.json();
+    return { success: true, opinions };
+  } else {
+    const errorText = await res.text();
+    return { success: false, message: errorText };
+  }
+}

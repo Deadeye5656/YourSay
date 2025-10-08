@@ -124,6 +124,66 @@
             "content": {
               "*/*": {
                 "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/legislation/vote": {
+      "post": {
+        "tags": [
+          "legislation-controller"
+        ],
+        "operationId": "addVoteOnBill",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VoteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/legislation/opinion": {
+      "post": {
+        "tags": [
+          "legislation-controller"
+        ],
+        "operationId": "addOpinionOnBill",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OpinionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
                   "type": "boolean"
                 }
               }
@@ -344,6 +404,9 @@
           "zipcode": {
             "type": "string"
           },
+          "state": {
+            "type": "string"
+          },
           "preferences": {
             "type": "string"
           },
@@ -372,6 +435,56 @@
           }
         }
       },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "zipcode": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "preferences": {
+            "type": "string"
+          },
+          "accessGranted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "VoteRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "bill_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vote": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OpinionRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "bill_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "opinion": {
+            "type": "string"
+          }
+        }
+      },
       "LocalLegislationRequest": {
         "type": "object",
         "properties": {
@@ -388,6 +501,9 @@
             "type": "string"
           },
           "description": {
+            "type": "string"
+          },
+          "category": {
             "type": "string"
           }
         }
@@ -422,6 +538,9 @@
             "type": "string"
           },
           "billDate": {
+            "type": "string"
+          },
+          "category": {
             "type": "string"
           }
         }

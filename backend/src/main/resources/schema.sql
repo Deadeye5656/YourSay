@@ -1,6 +1,8 @@
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS verification;
 DROP TABLE IF EXISTS legislation;
+DROP TABLE IF EXISTS opinions;
+DROP TABLE IF EXISTS voting;
 
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -28,6 +30,20 @@ CREATE TABLE IF NOT EXISTS legislation (
     city VARCHAR(100),
     bill_date VARCHAR(10),
     category VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS opinions (
+    id SERIAL PRIMARY KEY,
+    bill_id INTEGER UNIQUE,
+    email VARCHAR(100) NOT NULL,
+    opinion TEXT
+);
+
+CREATE TABLE IF NOT EXISTS voting (
+    id SERIAL PRIMARY KEY,
+    bill_id INTEGER UNIQUE,
+    email VARCHAR(100) NOT NULL,
+    vote boolean
 );
 
 INSERT INTO users (email, password, zipcode, preferences, state) VALUES

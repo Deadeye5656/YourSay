@@ -20,7 +20,7 @@ public class LegislationImportService {
     private String apiKey;
     private final String basePath = "https://api.legiscan.com/?key=";
     private final String operation = "&op=getMasterList";
-    final int totalBills = 6;
+    final int totalBills = 25;
 
     private final LegislationRepository legislationRepository;
 
@@ -32,12 +32,16 @@ public class LegislationImportService {
             "Tribute", "tribute", "Welcome", "welcome", "Farewell", "Honor", "honor", "Honoring", "honoring", "Recognizing", "recognizing",
             "Welcoming", "welcoming", "Farewell", "farewell", "Honour", "honour", "Honouring", "honouring", "Anniversary", "anniversary");
 
+//    private List<String> stateAbbreviations = List.of(
+//            "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+//            "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+//            "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+//            "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+//            "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "US", "DC"
+//    );
+
     private List<String> stateAbbreviations = List.of(
-            "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-            "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-            "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-            "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-            "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "US", "DC"
+            "MI"
     );
 
     public LegislationImportService(LegislationRepository legislationRepository) {
@@ -126,33 +130,15 @@ public class LegislationImportService {
             final JSONObject geodata = obj.getJSONObject("masterlist");
 
             int index = getLastIndex(geodata);
-            int lastIndex = index;
 
             int total = 0;
-            boolean shouldExcludeByTitle = true;
-            boolean secondPass = false;
-            int billsToSkip = 10;
-            for (; total < totalBills; index-=billsToSkip) {
+            for (; total < totalBills || index < 0; index-=1) {
                 System.out.println(state);
                 try {
-                    if (index < 0) {
-                        if (secondPass) {
-                            break;
-                        }
-                        index = lastIndex;
-                        billsToSkip = 1;
-                        shouldExcludeByTitle = false;
-                        secondPass = true;
-                    }
                     final JSONObject data = geodata.getJSONObject(Integer.toString(index));
                     String title = data.get("title").toString();
 
-                    boolean excluded = false;
-                    if (shouldExcludeByTitle) {
-                        excluded = checkTitleExclusion(title, excluded);
-                    }
-
-                    if (excluded) {
+                    if (checkTitleExclusion(title)) {
                         continue;
                     }
 
@@ -174,14 +160,13 @@ public class LegislationImportService {
         }
     }
 
-    private boolean checkTitleExclusion(String title, boolean excluded) {
+    private boolean checkTitleExclusion(String title) {
         for (String excludedTitle : excludedTitles) {
             if (title.contains(excludedTitle)) {
-                excluded = true;
-                break;
+                return true;
             }
         }
-        return excluded;
+        return false;
     }
 
     private static Legislation buildLegislation(JSONObject data, String title, String state) {
