@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PreferencesRequest {
-    private String email;
-    private String zipcode;
-    private String preferences;
+public class AiRequest {
+    private String state;
+    private String title;
+    private String bill_id;
 }

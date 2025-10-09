@@ -43,7 +43,7 @@ public class LegislationImportService {
 //    );
 
     private List<String> stateAbbreviations = List.of(
-            "MI"
+            "MI", "US"
     );
 
     public LegislationImportService(LegislationRepository legislationRepository) {
@@ -133,7 +133,6 @@ public class LegislationImportService {
 
             int total = 0;
             for (; total < totalBills || index < 0; index-=1) {
-                System.out.println(state);
                 try {
                     final JSONObject data = geodata.getJSONObject(Integer.toString(index));
                     String title = data.get("title").toString();

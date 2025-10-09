@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import './Federal.css';
 
-import { fetchFederalLegislation, addVote, addOpinion, getUserVotes, getUserOpinions } from '../api';
+import { fetchFederalLegislation, addVote, addOpinion, getUserVotes, getUserOpinions, getAISummary } from '../api';
 
 const categoryOptions = [
   'All',
@@ -38,6 +38,12 @@ const Federal = () => {
   const [userOpinions, setUserOpinions] = useState([]);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState(''); // 'success' or 'error'
+  const [aiSummary, setAiSummary] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [showAiSummary, setShowAiSummary] = useState(false);
+  const [typewriterText, setTypewriterText] = useState('');
+  const [aiError, setAiError] = useState(false);
+  const [aiButtonClicked, setAiButtonClicked] = useState(false);
 
   // Get user preferences for filtering
   const getUserPreferences = () => {
@@ -186,6 +192,53 @@ const Federal = () => {
     }
   };
 
+  // Typewriter effect for AI summary (faster speed)
+  const typewriterEffect = (text, speed = 10) => {
+    setTypewriterText('');
+    let i = 0;
+    const timer = setInterval(() => {
+      setTypewriterText(text.substring(0, i + 1));
+      i++;
+      if (i >= text.length) {
+        clearInterval(timer);
+      }
+    }, speed);
+    return timer;
+  };
+
+  // Handle AI summary request
+  const handleAISummary = async () => {
+    if (!modalData) return;
+    
+    setAiLoading(true);
+    setShowAiSummary(true);
+    setAiSummary('');
+    setTypewriterText('');
+    setAiError(false);
+    setAiButtonClicked(true);
+
+    try {
+      const userState = 'FEDERAL';
+      const billId = modalData.bill_id || modalData.id;
+      const title = modalData.title;
+
+      const result = await getAISummary(userState, billId, title);
+      if (result.success) {
+        setAiSummary(result.summary);
+        setAiLoading(false);
+        // Start typewriter effect
+        typewriterEffect(result.summary);
+      } else {
+        setAiLoading(false);
+        setAiError(true);
+      }
+    } catch (error) {
+      console.error('Error getting AI summary:', error);
+      setAiLoading(false);
+      setAiError(true);
+    }
+  };
+
   useEffect(() => {
     async function loadLegislation() {
       setLoading(true);
@@ -295,7 +348,19 @@ const Federal = () => {
             <div className="view-legislation-modal">
               <div className="modal-header view-modal-header">
                 <h2>{modalData.title}</h2>
-                <button className="modal-close modern-close" onClick={() => { setModalOpen(false); setVoting(false); setVote(null); setOpinionMode(false); setOpinionText(''); }}>&times;</button>
+                <button className="modal-close modern-close" onClick={() => { 
+                  setModalOpen(false); 
+                  setVoting(false); 
+                  setVote(null); 
+                  setOpinionMode(false); 
+                  setOpinionText(''); 
+                  setShowAiSummary(false);
+                  setAiSummary('');
+                  setTypewriterText('');
+                  setAiLoading(false);
+                  setAiError(false);
+                  setAiButtonClicked(false);
+                }}>&times;</button>
               </div>
               <div className="modal-content-body">
                 {statusMessage && (
@@ -312,6 +377,51 @@ const Federal = () => {
                 )}
                 <p><strong>Last Updated:</strong> {modalData.billDate}</p>
                 <p><strong>Summary:</strong> {modalData.description}</p>
+                
+                {/* AI Summary Button */}
+                <div className="ai-summary-section">
+                  {aiError ? (
+                    <div className="ai-unavailable">
+                      <span className="ai-icon-sad">🤖</span>
+                      <span>Sorry, AI generation isn't available right now</span>
+                    </div>
+                  ) : !aiButtonClicked ? (
+                    <button 
+                      className="btn-ai-summary" 
+                      onClick={handleAISummary}
+                      disabled={aiLoading}
+                    >
+                      {aiLoading ? (
+                        <>
+                          <div className="ai-spinner"></div>
+                          <span>Generating AI Summary...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="ai-icon">🤖</span>
+                          <span>Get AI Summary</span>
+                        </>
+                      )}
+                    </button>
+                  ) : null}
+                  
+                  {/* AI Summary Content */}
+                  {showAiSummary && !aiError && (
+                    <div className="ai-summary-content">
+                      <h4>🤖 AI Summary</h4>
+                      <div className="ai-summary-text">
+                        {aiLoading ? (
+                          <div className="ai-loading">
+                            <div className="ai-spinner"></div>
+                            <span>Analyzing legislation...</span>
+                          </div>
+                        ) : (
+                          <p>{typewriterText}</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {!voting && !opinionMode ? (
                   <div className="modal-actions modern-actions">
                     <button className="btn-secondary" onClick={() => setVoting(true)}>Vote</button>

@@ -19,9 +19,10 @@ public class LegislationController {
     private final LegislationImportService legislationImportService;
     private final FetchLegislationService fetchLegislationService;
     private final OpinionVoteService opinionVoteService;
+    private final GemeniService gemeniService;
 
     @Autowired
-    public LegislationController(SignUpService signUpService, PreferencesService preferencesService, LoginService loginService, EmailSenderService emailService, LegislationImportService legislationImportService, FetchLegislationService fetchLegislationService, OpinionVoteService opinionVoteService) {
+    public LegislationController(SignUpService signUpService, PreferencesService preferencesService, LoginService loginService, EmailSenderService emailService, LegislationImportService legislationImportService, FetchLegislationService fetchLegislationService, OpinionVoteService opinionVoteService, GemeniService gemeniService) {
         this.signUpService = signUpService;
         this.preferencesService = preferencesService;
         this.loginService = loginService;
@@ -29,6 +30,7 @@ public class LegislationController {
         this.legislationImportService = legislationImportService;
         this.fetchLegislationService = fetchLegislationService;
         this.opinionVoteService = opinionVoteService;
+        this.gemeniService = gemeniService;
     }
 
     // 1. Daily legislation data fetch
@@ -127,10 +129,17 @@ public class LegislationController {
         return ResponseEntity.ok(votes);
     }
 
-    // 10. Add opinion on bill
+    // 12. Add opinion on bill
     @GetMapping("/legislation/opinion/{email}")
     public ResponseEntity<List<Opinion>> getOpinions(@PathVariable String email) {
         List<Opinion> opinions = opinionVoteService.getOpinions(email);
         return ResponseEntity.ok(opinions);
+    }
+
+    // 13. Get AI summary on bill
+    @PostMapping("/legislation/ai")
+    public ResponseEntity<String> getOpinions(@RequestBody AiRequest request) {
+        String response = gemeniService.fetchAiSummaryOfBill(request.getState(), request.getBill_id(), request.getTitle());
+        return ResponseEntity.ok(response);
     }
 }

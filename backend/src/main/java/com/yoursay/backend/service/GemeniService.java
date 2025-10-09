@@ -3,29 +3,26 @@ package com.yoursay.backend.service;
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
-import com.google.genai.types.ThinkingConfig;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GemeniService {
 
-    public String generateResponse(String prompt) throws InterruptedException {
+    public String fetchAiSummaryOfBill(String state, String bill_id, String title){
         // The client gets the API key from the environment variable `GOOGLE_API_KEY`.
         Client client = new Client();
 
-        ThinkingConfig thinkingConfig = ThinkingConfig.builder()
-                .thinkingBudget(0) // Set thinking budget to 0 to disable thinking
-                .build();
-
-        GenerateContentConfig generateContentConfig = GenerateContentConfig.builder()
-                .thinkingConfig(thinkingConfig)
-                .build();
+        String prompt = String.format(
+                "Provide a concise summary of the following %s bill (%s) titled '%s' in 3-5 sentences," +
+                        " focusing on its main objectives and implications." +
+                        " Don't say things like based on... or as an AI model... Just give the summary.",
+                state, bill_id, title);
 
         GenerateContentResponse response =
                 client.models.generateContent(
-                        "gemini-2.0-flash-lite",
+                        "gemini-2.5-pro",
                         prompt,
-                        generateContentConfig);
+                        GenerateContentConfig.builder().build());
 
         return response.text();
     }

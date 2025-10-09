@@ -177,3 +177,26 @@ export async function getUserOpinions(email) {
     return { success: false, message: errorText };
   }
 }
+
+export async function getAISummary(state, billId, title) {
+  console.log("Fetching AI summary for:", { state, billId, title });
+  const requestBody = {
+    state: state,
+    bill_id: billId.toString(),
+    title: title
+  };
+  
+  const res = await fetch(`${BASE_URL}/api/legislation/ai`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(requestBody),
+  });
+  
+  if (res.ok) {
+    const summary = await res.text();
+    return { success: true, summary };
+  } else {
+    const errorText = await res.text();
+    return { success: false, message: errorText };
+  }
+}
