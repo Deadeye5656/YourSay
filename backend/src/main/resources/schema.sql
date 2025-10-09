@@ -34,14 +34,14 @@ CREATE TABLE IF NOT EXISTS legislation (
 
 CREATE TABLE IF NOT EXISTS opinions (
     id SERIAL PRIMARY KEY,
-    bill_id INTEGER UNIQUE,
+    bill_id INTEGER,
     email VARCHAR(100) NOT NULL,
     opinion TEXT
 );
 
 CREATE TABLE IF NOT EXISTS voting (
     id SERIAL PRIMARY KEY,
-    bill_id INTEGER UNIQUE,
+    bill_id INTEGER,
     email VARCHAR(100) NOT NULL,
     vote boolean
 );
