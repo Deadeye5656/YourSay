@@ -119,25 +119,39 @@
 }
 .modal-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 1.2rem;
+  gap: 1rem;
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 1.4rem;
+  flex: 1;
+  padding-right: 1rem;
+  line-height: 1.3;
 }
 
 .modal-header .modal-close {
   position: static;
-  font-size: 2rem;
-  margin-left: 1.5rem;
+  font-size: 1.8rem;
   color: #3949ab;
   background: none;
   border: none;
   cursor: pointer;
   align-self: flex-start;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.modal-header .modal-close:hover {
+  color: #2a3d7c;
 }
 .modal-overlay {
   position: fixed;

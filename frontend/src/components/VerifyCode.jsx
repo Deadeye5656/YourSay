@@ -152,13 +152,21 @@ const VerifyCode = ({ onVerifySuccess }) => {
   };
 
   return (
-    <div className="verify-code-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '3rem' }}>
-      <h2 style={{ marginBottom: '1.5rem' }}>Verify Your Email & Create Account</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className="verify-code-container" style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      marginTop: '3rem',
+      padding: '2rem',
+      minHeight: '60vh'
+    }}>
+      <h2 style={{ marginBottom: '1.5rem', textAlign: 'center' }}>Verify Your Email & Create Account</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '500px' }}>
         <div style={{ marginBottom: '1rem', fontSize: '1.1rem', color: '#333', textAlign: 'center' }}>
           Please enter the 6-digit verification code we sent to your email.
         </div>
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', justifyContent: 'center' }}>
           {code.map((digit, idx) => (
             <input
               key={idx}
@@ -221,8 +229,38 @@ const VerifyCode = ({ onVerifySuccess }) => {
           {isResending ? 'Sending...' : 'Resend Code'}
         </button>
       </form>
-      {error && <p className="error" style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
-      {resendMessage && <p style={{ color: 'green', marginTop: '1rem' }}>{resendMessage}</p>}
+      {error && (
+        <div style={{ 
+          color: '#d32f2f', 
+          marginTop: '1rem', 
+          padding: '0.75rem 1rem',
+          backgroundColor: '#ffebee',
+          border: '1px solid #ffcdd2',
+          borderRadius: '6px',
+          fontSize: '0.9rem',
+          textAlign: 'center',
+          maxWidth: '400px',
+          width: '100%'
+        }}>
+          {error}
+        </div>
+      )}
+      {resendMessage && (
+        <div style={{ 
+          color: '#388e3c', 
+          marginTop: '1rem', 
+          padding: '0.75rem 1rem',
+          backgroundColor: '#e8f5e9',
+          border: '1px solid #c8e6c9',
+          borderRadius: '6px',
+          fontSize: '0.9rem',
+          textAlign: 'center',
+          maxWidth: '400px',
+          width: '100%'
+        }}>
+          {resendMessage}
+        </div>
+      )}
     </div>
   );
 };

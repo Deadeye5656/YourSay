@@ -21,26 +21,12 @@ public class GemeniService {
                 .thinkingConfig(thinkingConfig)
                 .build();
 
-        Thread.sleep(2000L);
+        GenerateContentResponse response =
+                client.models.generateContent(
+                        "gemini-2.0-flash-lite",
+                        prompt,
+                        generateContentConfig);
 
-        int attempt = 0;
-        while (attempt < 5) {
-            try {
-                GenerateContentResponse response =
-                        client.models.generateContent(
-                                "gemini-2.0-flash-lite",
-                                prompt,
-                                generateContentConfig);
-                return response.text();
-            } catch (Exception e) {
-                attempt++;
-                if (attempt == 5) {
-                    throw e; // rethrow the exception after 3 failed attempts
-                }
-                Thread.sleep(2000L * attempt); // wait before retrying
-            }
-        }
-
-        return "";
+        return response.text();
     }
 }

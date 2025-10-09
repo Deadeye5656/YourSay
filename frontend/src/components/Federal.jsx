@@ -250,6 +250,7 @@ const Federal = () => {
         </div>
         <div className="legislation-list">
           {error && <div className="error">{error}</div>}
+          {!error && filteredLegislation.length === 0 && <div className="no-results">No federal legislation found.</div>}
           {!error && filteredLegislation.map((item, idx) => {
             const billId = item.bill_id || item.id;
             const userVote = getUserVoteForBill(billId);
@@ -303,10 +304,8 @@ const Federal = () => {
                   </div>
                 )}
                 {/* Show full title if it's longer than what would fit in 2 lines (approximately 60 characters) */}
-                {modalData.title && modalData.title.length > 60 && (
-                  <div className="full-title-section">
-                    <p><strong>Full Title:</strong> {modalData.title}</p>
-                  </div>
+                {modalData.title && modalData.title.length > 83 && (
+                  <p><strong>Full Title:</strong> {modalData.title}</p>
                 )}
                 {modalData.category && (
                   <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{modalData.category}</span></p>
