@@ -20,6 +20,7 @@ public class OpinionVoteService {
 
     public boolean addOpinionFromRequest(OpinionRequest opinionRequest) {
         try {
+            opinionsRepository.deleteByEmailAndBillId(opinionRequest.getEmail(), opinionRequest.getBill_id());
             Opinion opinion = new Opinion();
             opinion.setEmail(opinionRequest.getEmail());
             opinion.setOpinion(opinionRequest.getOpinion());
@@ -33,6 +34,7 @@ public class OpinionVoteService {
 
     public boolean addVoteFromRequest(VoteRequest voteRequest) {
         try{
+            votingRepository.deleteByEmailAndBillId(voteRequest.getEmail(), voteRequest.getBill_id());
             Vote vote = new Vote();
             vote.setEmail(voteRequest.getEmail());
             vote.setVote(voteRequest.getVote());
