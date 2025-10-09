@@ -111,6 +111,20 @@ const State = () => {
     }, 3000);
   };
 
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup function to restore scrolling
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [modalOpen]);
+
   // Handle vote submission
   const handleVoteSubmit = async () => {
     const userEmail = getUserEmail();
@@ -242,11 +256,6 @@ const State = () => {
           />
         </div>
         <div className="legislation-list">
-          {statusMessage && (
-            <div className={`status-message ${statusType}`}>
-              {statusMessage}
-            </div>
-          )}
           {error && <div className="error">{error}</div>}
           {!error && filteredLegislation.length === 0 && <div className="no-results">No legislation found.</div>}
           {!error && filteredLegislation.map((item, idx) => {
@@ -256,25 +265,29 @@ const State = () => {
             
             return (
               <div key={item.id || idx} className="legislation-card big">
-                <h3>{item.title}</h3>
-                {item.category && (
-                  <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{item.category}</span></p>
-                )}
-                <p><strong>Last Updated:</strong> {item.billDate || 'N/A'}</p>
-                <p><strong>Summary:</strong> {item.description}</p>
-                
-                {/* Status indicators */}
-                <div className="user-status">
-                  {userVote && (
-                    <span className={`status-badge vote-status ${userVote.vote ? 'yay' : 'nay'}`}>
-                      {userVote.vote ? '✓ Voted YAY' : '✗ Voted NAY'}
-                    </span>
-                  )}
-                  {userOpinion && (
-                    <span className="status-badge opinion-status">
-                      💭 Opinion Submitted
-                    </span>
-                  )}
+                <div className="card-content">
+                  <h3>{item.title}</h3>
+                  <div className="card-details">
+                    {item.category && (
+                      <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{item.category}</span></p>
+                    )}
+                    <p><strong>Last Updated:</strong> {item.billDate || 'N/A'}</p>
+                    <p><strong>Summary:</strong> {item.description}</p>
+                  </div>
+                  
+                  {/* Status indicators */}
+                  <div className="user-status">
+                    {userVote && (
+                      <span className={`status-badge vote-status ${userVote.vote ? 'yay' : 'nay'}`}>
+                        {userVote.vote ? '✓ Voted YAY' : '✗ Voted NAY'}
+                      </span>
+                    )}
+                    {userOpinion && (
+                      <span className="status-badge opinion-status">
+                        💭 Opinion Submitted
+                      </span>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="card-actions">
@@ -292,6 +305,17 @@ const State = () => {
                 <button className="modal-close modern-close" onClick={() => { setModalOpen(false); setVoting(false); setVote(null); setOpinionMode(false); setOpinionText(''); }}>&times;</button>
               </div>
               <div className="modal-content-body">
+                {statusMessage && (
+                  <div className={`status-message ${statusType}`}>
+                    {statusMessage}
+                  </div>
+                )}
+                {/* Show full title if it's longer than what would fit in 2 lines (approximately 60 characters) */}
+                {modalData.title && modalData.title.length > 60 && (
+                  <div className="full-title-section">
+                    <p><strong>Full Title:</strong> {modalData.title}</p>
+                  </div>
+                )}
                 {modalData.category && (
                   <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{modalData.category}</span></p>
                 )}

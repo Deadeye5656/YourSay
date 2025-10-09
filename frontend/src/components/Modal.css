@@ -1,111 +1,73 @@
 .vote-choices {
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin: 2rem 0 1.5rem 0;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 0;
 }
 
 .vote-choice {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  padding: 1.5rem 2.5rem;
-  border-radius: 16px;
-  border: 3px solid transparent;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  border: 2px solid #e1e5e9;
   background: #f8f9fa;
-  position: relative;
-  overflow: hidden;
   min-width: 120px;
-}
-
-.vote-choice::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.vote-choice:hover::before {
-  opacity: 1;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #666;
 }
 
 .vote-choice:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.vote-choice.selected {
+  border-color: #3949ab;
+  background: #f0f4ff;
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(57, 73, 171, 0.15);
 }
 
 .vote-choice.selected.yay-selected {
-  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+  background: #e8f5e8;
   border-color: #4caf50;
-  color: white;
+  color: #2e7d32;
 }
 
 .vote-choice.selected.nay-selected {
-  background: linear-gradient(135deg, #f44336 0%, #ef5350 100%);
+  background: #ffebee;
   border-color: #f44336;
-  color: white;
+  color: #c62828;
+}
+
+.vote-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .vote-icon.yay {
-  font-size: 3.5rem;
   color: #4caf50;
-  margin-bottom: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.vote-choice.selected.yay-selected .vote-icon.yay {
-  color: white;
-  transform: scale(1.1);
-}
-
-.vote-label.yay {
-  font-size: 1.3rem;
-  color: #4caf50;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-}
-
-.vote-choice.selected.yay-selected .vote-label.yay {
-  color: white;
 }
 
 .vote-icon.nay {
-  font-size: 3.5rem;
   color: #f44336;
-  margin-bottom: 0.5rem;
-  transition: all 0.3s ease;
 }
 
-.vote-choice.selected.nay-selected .vote-icon.nay {
-  color: white;
-  transform: scale(1.1);
+.vote-label {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.vote-label.yay {
+  color: inherit;
 }
 
 .vote-label.nay {
-  font-size: 1.3rem;
-  color: #f44336;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-}
-
-.vote-choice.selected.nay-selected .vote-label.nay {
-  color: white;
+  color: inherit;
 }
 .back-btn, .submit-btn {
   background: #3949ab;
@@ -187,7 +149,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
 }
 
 .modal-content {
@@ -198,11 +161,12 @@
   max-width: 90vw;
   box-shadow: 0 8px 32px rgba(30,30,60,0.16);
   position: relative;
-    color: #222;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: 1.08rem;
-    line-height: 1.7;
-  }
+  color: #222;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  z-index: 10000;
+}
 
   .modal-content h2, .modal-content h3 {
     color: #2a3d7c;
@@ -356,6 +320,8 @@
   gap: 1rem;
   margin-top: 2rem;
   justify-content: center;
+  position: relative;
+  z-index: 10001;
 }
 
 .btn-primary, .btn-secondary {
@@ -410,10 +376,12 @@
 
 /* View Legislation Modal Styles */
 .view-legislation-modal {
-  width: 575px;
+  width: 600px;
   height: 650px;
-  max-width: 575px;
+  max-width: 600px;
   max-height: 650px;
+  min-width: 600px;
+  min-height: 650px;
   display: flex;
   flex-direction: column;
 }
@@ -436,6 +404,14 @@
   font-size: 1.8rem;
   font-weight: 600;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  max-height: 4.5rem;
+  line-height: 1.25;
 }
 
 .modal-content-body {
@@ -446,6 +422,9 @@
   overflow-y: auto;
   padding: 0 0.5rem;
   padding-bottom: 0;
+  background: white;
+  position: relative;
+  z-index: 10002;
 }
 
 /* Custom scrollbar styling for modal content */
@@ -481,6 +460,7 @@
   bottom: 0;
   background: white;
   border-top: 1px solid #e1e5e9;
+  z-index: 10003;
 }
 
 .modal-content-body p {
@@ -491,4 +471,25 @@
 
 .modal-content-body strong {
   color: #2a3d7c;
+}
+
+/* Full Title Section */
+.full-title-section {
+  background: #f0f4ff;
+  border: 2px solid #e3f0ff;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.full-title-section p {
+  margin: 0;
+  color: #2a3d7c;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.full-title-section strong {
+  color: #1a237e;
+  font-weight: 600;
 }

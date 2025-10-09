@@ -196,6 +196,20 @@
   transition: all 0.3s ease;
   overflow: hidden;
   position: relative;
+  opacity: 1;
+  visibility: visible;
+}
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.card-details {
+  flex: 1;
+  overflow: hidden;
 }
 
 .legislation-card.big::before {
@@ -227,6 +241,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   line-clamp: 2;
+  min-height: 2.8rem; /* Reserve space for 2 lines */
 }
 
 .legislation-card.big p {
@@ -236,9 +251,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-clamp: 3;
+  line-clamp: 2;
+}
+
+/* Specific styling for summary paragraphs - using a more compatible approach */
+.legislation-card.big p:last-of-type {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  max-height: 3.2rem; /* 2 lines * 1.6 line-height */
 }
 
 .legislation-card.big strong {
@@ -397,6 +419,7 @@
   gap: 8px;
   margin: 12px 0;
   flex-wrap: wrap;
+  min-height: 2rem; /* Reserve space even when empty */
 }
 
 .status-badge {
@@ -408,6 +431,8 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .vote-status.yay {
