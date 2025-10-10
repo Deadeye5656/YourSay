@@ -11,4 +11,6 @@ public class LoginResponse {
     private String state;
     private String preferences;
     private boolean accessGranted;
+    private String refreshToken;
+    private String accessToken;
 }

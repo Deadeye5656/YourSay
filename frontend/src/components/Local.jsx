@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import './Local.css';
+import DOMPurify from 'dompurify';
 
-import { fetchLocalLegislation, addLocalLegislation, addVote, addOpinion, getUserVotes, getUserOpinions, getAISummary } from '../api';
+import { fetchLocalLegislation, addLocalLegislation, addVote, addOpinion, getUserVotes, getUserOpinions, getAISummary, validateToken, refreshToken } from '../api';
 
 const DEFAULT_ZIPCODE = '48067';
 
@@ -24,6 +25,12 @@ const categoryOptions = [
 ];
 
 const Local = () => {
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  
+  // Existing state
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
@@ -75,8 +82,35 @@ const Local = () => {
     return [];
   };
 
-  // Get user email from localStorage
+  // Secure authentication helpers
+  const getAuthToken = () => {
+    return localStorage.getItem('authToken');
+  };
+
+  const clearAuth = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userState');
+    localStorage.removeItem('userPreferences');
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+  };
+
+  // Content sanitization helper
+  const sanitizeContent = (content) => {
+    if (!content) return '';
+    return DOMPurify.sanitize(content, { 
+      ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'p', 'br'],
+      ALLOWED_ATTR: []
+    });
+  };
+
+  // Get user email from authenticated user or localStorage (fallback)
   const getUserEmail = () => {
+    if (isAuthenticated && currentUser?.email) {
+      return currentUser.email;
+    }
     return localStorage.getItem('userEmail') || '';
   };
 
@@ -93,10 +127,18 @@ const Local = () => {
 
       if (votesResult.success) {
         setUserVotes(votesResult.votes);
+      } else if (votesResult.authError) {
+        clearAuth();
+        showStatusMessage('Session expired. Please log in again.', 'error');
+        return;
       }
       
       if (opinionsResult.success) {
         setUserOpinions(opinionsResult.opinions);
+      } else if (opinionsResult.authError) {
+        clearAuth();
+        showStatusMessage('Session expired. Please log in again.', 'error');
+        return;
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -137,6 +179,60 @@ const Local = () => {
     };
   }, [modalOpen, addModalOpen]);
 
+  // Authentication validation on component mount
+  useEffect(() => {
+    const validateAuth = async () => {
+      setAuthLoading(true);
+      const token = getAuthToken();
+      
+      if (token) {
+        try {
+          const response = await validateToken(token);
+          if (response.valid) {
+            setIsAuthenticated(true);
+            setCurrentUser(response.user);
+            console.log('User authenticated:', response.user);
+            // Load user data after successful authentication
+            await loadUserData();
+          } else {
+            // Token invalid, try to refresh
+            const refreshResult = await refreshToken();
+            if (refreshResult.success) {
+              // Retry validation with new token
+              const retryResponse = await validateToken(refreshResult.accessToken);
+              if (retryResponse.valid) {
+                setIsAuthenticated(true);
+                setCurrentUser(retryResponse.user);
+                console.log('User authenticated after refresh:', retryResponse.user);
+                await loadUserData();
+              } else {
+                clearAuth();
+              }
+            } else {
+              clearAuth();
+            }
+          }
+        } catch (error) {
+          console.error('Auth validation failed:', error);
+          clearAuth();
+        }
+      } else {
+        // No token, check if user email exists (legacy support)
+        const userEmail = localStorage.getItem('userEmail');
+        if (userEmail) {
+          console.warn('User using legacy authentication method');
+          // For backward compatibility, allow basic functionality
+          // Try to load user data even without JWT tokens
+          await loadUserData();
+        }
+      }
+      
+      setAuthLoading(false);
+    };
+    
+    validateAuth();
+  }, []);
+
   // Handle vote submission
   const handleVoteSubmit = async () => {
     const userEmail = getUserEmail();
@@ -161,6 +257,10 @@ const Local = () => {
         setVote(null);
         // Reload user data to update UI
         await loadUserData();
+      } else if (result.authError) {
+        // Handle authentication error
+        clearAuth();
+        showStatusMessage('Session expired. Please log in again.', 'error');
       } else {
         showStatusMessage(`Failed to submit vote: ${result.message}`, 'error');
       }
@@ -194,6 +294,10 @@ const Local = () => {
         setOpinionText('');
         // Reload user data to update UI
         await loadUserData();
+      } else if (result.authError) {
+        // Handle authentication error
+        clearAuth();
+        showStatusMessage('Session expired. Please log in again.', 'error');
       } else {
         showStatusMessage(`Failed to submit opinion: ${result.message}`, 'error');
       }
@@ -289,7 +393,7 @@ const Local = () => {
     return matchesSearch && matchesCategory;
   });
 
-  if (loading || minLoading) {
+  if (loading || minLoading || authLoading) {
     return (
       <div className="loading-spinner-container">
         <div className="big-blue-spinner"></div>
@@ -333,10 +437,10 @@ const Local = () => {
                   <h3>{item.title}</h3>
                   <div className="card-details">
                     {item.category && (
-                      <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{item.category}</span></p>
+                      <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{sanitizeContent(item.category)}</span></p>
                     )}
-                    <p><strong>Last Updated:</strong> {item.billDate || item.date || 'N/A'}</p>
-                    <p><strong>Summary:</strong> {item.description || item.summary}</p>
+                    <p><strong>Last Updated:</strong> {sanitizeContent(item.billDate || item.date || 'N/A')}</p>
+                    <p><strong>Summary:</strong> {sanitizeContent(item.description || item.summary)}</p>
                   </div>
                   
                   {/* Status indicators */}
@@ -388,13 +492,13 @@ const Local = () => {
                 )}
                 {/* Show full title if it's longer than what would fit in 2 lines (approximately 60 characters) */}
                 {modalData.title && modalData.title.length > 83 && (
-                  <p><strong>Full Title:</strong> {modalData.title}</p>
+                  <p><strong>Full Title:</strong> <span dangerouslySetInnerHTML={{ __html: sanitizeContent(modalData.title) }}></span></p>
                 )}
                 {modalData.category && (
-                  <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}}>{modalData.category}</span></p>
+                  <p><strong>Category:</strong> <span style={{color: '#0077ff', fontWeight: '600'}} dangerouslySetInnerHTML={{ __html: sanitizeContent(modalData.category) }}></span></p>
                 )}
-                <p><strong>Last Updated:</strong> {modalData.billDate}</p>
-                <p><strong>Summary:</strong> {modalData.description}</p>
+                <p><strong>Last Updated:</strong> <span dangerouslySetInnerHTML={{ __html: sanitizeContent(modalData.billDate) }}></span></p>
+                <p><strong>Summary:</strong> <span dangerouslySetInnerHTML={{ __html: sanitizeContent(modalData.description) }}></span></p>
                 
                 {/* AI Summary Button */}
                 <div className="ai-summary-section">

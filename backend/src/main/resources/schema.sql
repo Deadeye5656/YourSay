@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS verification;
-DROP TABLE IF EXISTS legislation;
+--DROP TABLE IF EXISTS legislation;
 DROP TABLE IF EXISTS opinions;
 DROP TABLE IF EXISTS voting;
 

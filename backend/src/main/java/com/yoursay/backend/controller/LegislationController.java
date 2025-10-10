@@ -59,13 +59,6 @@ public class LegislationController {
         return ResponseEntity.ok("Verification text sent.");
     }
 
-    // 4. Check login credentials
-    @PostMapping("/users/login")
-    public ResponseEntity<LoginResponse> checkLogin(@RequestBody LoginRequest request) {
-        LoginResponse loginResponse = loginService.checkPassword(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(loginResponse);
-    }
-
     // 5. Update zipcode and preferences
     @PutMapping("/users/preferences")
     public ResponseEntity<String> updatePreferences(@RequestBody PreferencesRequest preferences) {
