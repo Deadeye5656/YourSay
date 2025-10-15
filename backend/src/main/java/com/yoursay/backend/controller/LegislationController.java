@@ -135,4 +135,10 @@ public class LegislationController {
         String response = gemeniService.fetchAiSummaryOfBill(request.getState(), request.getBill_id(), request.getTitle());
         return ResponseEntity.ok(response);
     }
+
+    // 14. Health check endpoint
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("pong");
+    }
 }

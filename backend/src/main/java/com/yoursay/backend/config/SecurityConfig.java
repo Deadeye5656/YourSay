@@ -24,12 +24,10 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/api/users/login",
                     "/api/users",
+                    "/api/ping",
                     "/api/users/send-verification",
                     "/api/auth/validate",
                     "/api/auth/refresh",
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/swagger-ui.html"
                 ).permitAll()
                 .anyRequest().authenticated()
             );
