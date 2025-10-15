@@ -27,7 +27,7 @@ public class SecurityConfig {
                     "/api/ping",
                     "/api/users/send-verification",
                     "/api/auth/validate",
-                    "/api/auth/refresh",
+                    "/api/auth/refresh"
                 ).permitAll()
                 .anyRequest().authenticated()
             );
