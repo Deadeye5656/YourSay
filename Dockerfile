@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for YourSay application
 # Stage 1: Build frontend
-FROM node:18-alpine AS frontend-build
+FROM node:20-slim AS frontend-build
 
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
@@ -10,7 +10,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Stage 2: Build backend
-FROM maven:3.9-openjdk-17 AS backend-build
+FROM maven:3.8.5-openjdk-17 AS backend-build
 
 WORKDIR /app/backend
 COPY backend/pom.xml ./
