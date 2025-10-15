@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  yoursay-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # Backend Spring Boot
+      - "5173:5173"  # Frontend Vite dev server
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    volumes:
+      - ./frontend/src:/app/frontend/src  # Hot reload for frontend development
+    networks:
+      - yoursay-network
+
+networks:
+  yoursay-network:
+    driver: bridge

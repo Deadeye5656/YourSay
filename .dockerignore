@@ -1,0 +1,45 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!DOCKER_README.md
+
+# Node modules (will be installed in container)
+frontend/node_modules
+frontend/dist
+
+# Maven target (will be built in container)
+backend/target
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Temporary files
+*.tmp
+*.temp
