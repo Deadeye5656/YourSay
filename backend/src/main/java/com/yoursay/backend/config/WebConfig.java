@@ -16,7 +16,8 @@ public class WebConfig {
                         .allowedOrigins(
                             "http://localhost:5173",
                             "http://localhost:8080",
-                            "https://yoursay-frontend.onrender.com"
+                            "https://yoursay-frontend.onrender.com",
+                            "https://cron-job.org"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
