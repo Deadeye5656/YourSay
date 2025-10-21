@@ -16,8 +16,7 @@ public class WebConfig {
                         .allowedOrigins(
                             "http://localhost:5173",
                             "http://localhost:8080",
-                            "https://yoursay-16cb.onrender.com", // Add your actual domain
-                            "*" // For development only - remove in production
+                            "https://yoursay-16cb.onrender.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
