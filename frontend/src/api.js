@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://yoursay-16cb.onrender.com:8080";
 
 export async function signupUser(data) {
   const res = await fetch(`${BASE_URL}/api/users`, {
