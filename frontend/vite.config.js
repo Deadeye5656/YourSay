@@ -8,7 +8,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     allowedHosts: [
-      'yoursay-16cb.onrender.com',
+      'yoursay-frontend.onrender',
       'localhost',
       '127.0.0.1'
     ]
