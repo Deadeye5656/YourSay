@@ -18,7 +18,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.disable())
+            .cors(cors -> {})
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -27,7 +27,8 @@ public class SecurityConfig {
                     "/api/ping",
                     "/api/users/send-verification",
                     "/api/auth/validate",
-                    "/api/auth/refresh"
+                    "/api/auth/refresh",
+                    "/api/legislation/daily-fetch"
                 ).permitAll()
                 .anyRequest().authenticated()
             );
