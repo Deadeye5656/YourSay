@@ -61,7 +61,9 @@ const Login = ({ onLoginSuccess }) => {
     <div className="login-page">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
-        {error && <div className="error">{error}</div>}
+        <div className="error-container">
+          {error && <div className="error">{error}</div>}
+        </div>
         <input
           type="email"
           placeholder="Email"

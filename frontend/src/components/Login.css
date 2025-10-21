@@ -17,6 +17,8 @@
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
+  position: relative;
+  min-height: 400px; /* Fixed minimum height to prevent size changes */
 }
 
 .login-form h2 {
@@ -38,6 +40,8 @@
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
 }
+
+
 
 .login-form input:focus {
   outline: none;
@@ -97,10 +101,30 @@
   box-shadow: none;
 }
 
+.error-container {
+  width: 100%;
+  max-width: 320px;
+  min-height: 50px; /* Fixed space always reserved for error */
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .error {
   color: #d32f2f;
-  margin-bottom: 1rem;
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .topics-section {
