@@ -393,7 +393,7 @@ const State = () => {
     <div className="state-page">
       <div className="state-page-header">
         <h2>State Legislation</h2>
-        <div className="state-page-subtitle">Michigan State Laws & Proposals</div>
+        <div className="state-page-subtitle">State Laws & Proposals</div>
       </div>
       <div className="state-page-content">
         <div className="filter-bar">
