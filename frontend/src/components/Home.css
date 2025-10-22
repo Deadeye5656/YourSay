@@ -5,6 +5,8 @@
   background: linear-gradient(135deg, #f5f6fa 0%, #e8eaf6 100%);
   min-height: calc(100vh - 64px);
   min-height: calc(100vh - 64px);
+  min-width: 1200px;
+  max-width: 1200px;
 }
 
 .home__header {
