@@ -120,6 +120,7 @@ public class LegislationImportService {
     @Transactional
     public void fetchMasterList() {
         List<Integer> existingBillIds = new ArrayList<>();
+        legislationRepository.deleteAllLegislation();
 
         for (String state : stateAbbreviations) {
             RestTemplate restTemplate = new RestTemplate();
