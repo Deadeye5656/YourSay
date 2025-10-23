@@ -78,9 +78,12 @@ export async function sendVerification(data) {
 
 export async function updatePreferences(data) {
   console.log("Updating preferences:", data);
-  const res = await fetch(`${BASE_URL}/api/users/preferences`, {
+  
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/users/preferences`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(data),
   });
   
@@ -91,16 +94,15 @@ export async function updatePreferences(data) {
   // Return a consistent object format
   if (res.ok) {
     return { success: true, message: responseText };
+  } else if (res.status === 401 || res.status === 403) {
+    return { success: false, message: "Authentication required", authError: true };
   } else {
     return { success: false, message: responseText };
   }
 }
 
 export async function fetchLocalLegislation(zipcode) {
-  const authHeaders = getAuthHeaders();
-  const res = await fetch(`${BASE_URL}/api/legislation/local/${zipcode}`, {
-    headers: authHeaders
-  });
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/local/${zipcode}`);
   
   if (res.status === 401 || res.status === 403) {
     throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
@@ -110,10 +112,7 @@ export async function fetchLocalLegislation(zipcode) {
 }
 
 export async function fetchStateLegislation(state) {
-  const authHeaders = getAuthHeaders();
-  const res = await fetch(`${BASE_URL}/api/legislation/state/${state}`, {
-    headers: authHeaders
-  });
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/state/${state}`);
   
   if (res.status === 401 || res.status === 403) {
     throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
@@ -123,10 +122,7 @@ export async function fetchStateLegislation(state) {
 }
 
 export async function fetchFederalLegislation() {
-  const authHeaders = getAuthHeaders();
-  const res = await fetch(`${BASE_URL}/api/legislation/federal`, {
-    headers: authHeaders
-  });
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/federal`);
   
   if (res.status === 401 || res.status === 403) {
     throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
@@ -136,10 +132,7 @@ export async function fetchFederalLegislation() {
 }
 
 export async function fetchRandomLegislation(zipcode, state) {
-  const authHeaders = getAuthHeaders();
-  const res = await fetch(`${BASE_URL}/api/legislation/random/${zipcode}/${state}`, {
-    headers: authHeaders
-  });
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/random/${zipcode}/${state}`);
   
   if (res.status === 401 || res.status === 403) {
     throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
@@ -149,12 +142,10 @@ export async function fetchRandomLegislation(zipcode, state) {
 }
 
 export async function addLocalLegislation(data) {
-  const authHeaders = getAuthHeaders();
-  const res = await fetch(`${BASE_URL}/api/legislation/local`, {
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/local`, {
     method: "POST",
     headers: { 
-      "Content-Type": "application/json",
-      ...authHeaders
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(data),
   });
@@ -168,13 +159,11 @@ export async function addLocalLegislation(data) {
 
 export async function addVote(data) {
   console.log("Adding vote:", data);
-  const authHeaders = getAuthHeaders();
   
-  const res = await fetch(`${BASE_URL}/api/legislation/vote`, {
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/vote`, {
     method: "POST",
     headers: { 
-      "Content-Type": "application/json",
-      ...authHeaders
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(data),
   });
@@ -192,13 +181,11 @@ export async function addVote(data) {
 
 export async function addOpinion(data) {
   console.log("Adding opinion:", data);
-  const authHeaders = getAuthHeaders();
   
-  const res = await fetch(`${BASE_URL}/api/legislation/opinion`, {
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/opinion`, {
     method: "POST",
     headers: { 
-      "Content-Type": "application/json",
-      ...authHeaders
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(data),
   });
@@ -216,11 +203,8 @@ export async function addOpinion(data) {
 
 export async function getUserVotes(email) {
   console.log("Fetching votes for user:", email);
-  const authHeaders = getAuthHeaders();
   
-  const res = await fetch(`${BASE_URL}/api/legislation/vote/${encodeURIComponent(email)}`, {
-    headers: authHeaders
-  });
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/vote/${encodeURIComponent(email)}`);
   
   if (res.ok) {
     const votes = await res.json();
@@ -235,11 +219,8 @@ export async function getUserVotes(email) {
 
 export async function getUserOpinions(email) {
   console.log("Fetching opinions for user:", email);
-  const authHeaders = getAuthHeaders();
   
-  const res = await fetch(`${BASE_URL}/api/legislation/opinion/${encodeURIComponent(email)}`, {
-    headers: authHeaders
-  });
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/opinion/${encodeURIComponent(email)}`);
   
   if (res.ok) {
     const opinions = await res.json();
@@ -254,18 +235,16 @@ export async function getUserOpinions(email) {
 
 export async function getAISummary(state, billId, title) {
   console.log("Fetching AI summary for:", { state, billId, title });
-  const authHeaders = getAuthHeaders();
   const requestBody = {
     state: state,
     bill_id: billId.toString(),
     title: title
   };
   
-  const res = await fetch(`${BASE_URL}/api/legislation/ai`, {
+  let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/ai`, {
     method: "POST",
     headers: { 
-      "Content-Type": "application/json",
-      ...authHeaders
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(requestBody),
   });
@@ -307,7 +286,10 @@ export async function validateToken(token) {
 export async function refreshToken() {
   try {
     const refreshTokenValue = localStorage.getItem('refreshToken');
-    if (!refreshTokenValue) return { success: false };
+    if (!refreshTokenValue) {
+      clearSession();
+      return { success: false };
+    }
     
     const res = await fetch(`${BASE_URL}/api/auth/refresh`, {
       method: "POST",
@@ -325,10 +307,13 @@ export async function refreshToken() {
       }
       return { success: true, accessToken: tokens.accessToken };
     } else {
+      // Refresh token is invalid or expired, clear session
+      clearSession();
       return { success: false };
     }
   } catch (error) {
     console.error("Token refresh error:", error);
+    clearSession();
     return { success: false };
   }
 }
@@ -337,4 +322,86 @@ export async function refreshToken() {
 export function getAuthHeaders() {
   const token = localStorage.getItem('authToken');
   return token ? { "Authorization": `Bearer ${token}` } : {};
+}
+
+// Check if user has valid session data
+export function isSessionValid() {
+  const authToken = localStorage.getItem('authToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  const userEmail = localStorage.getItem('userEmail');
+  const userZipcode = localStorage.getItem('userZipcode');
+  const userState = localStorage.getItem('userState');
+  const userPreferences = localStorage.getItem('userPreferences');
+  
+  // If no tokens, session is invalid
+  if (!authToken && !refreshToken) {
+    return false;
+  }
+  
+  // If missing any required user data, session is invalid
+  if (!userEmail || !userZipcode || !userState || !userPreferences) {
+    return false;
+  }
+  
+  return true;
+}
+
+// Clear all user session data
+export function clearSession() {
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('isAuthenticated');
+  localStorage.removeItem('userEmail');
+  localStorage.removeItem('userZipcode');
+  localStorage.removeItem('userState');
+  localStorage.removeItem('userPreferences');
+}
+
+// Check session validity and clear if invalid
+export function validateAndClearSession() {
+  if (!isSessionValid()) {
+    clearSession();
+    return false;
+  }
+  return true;
+}
+
+// Helper function to make authenticated API calls with automatic token refresh
+export async function makeAuthenticatedRequest(url, options = {}) {
+  // Check if session is valid before making request
+  if (!isSessionValid()) {
+    clearSession();
+    throw new Error('Session expired. Please log in again.');
+  }
+  
+  const authHeaders = getAuthHeaders();
+  const requestOptions = {
+    ...options,
+    headers: {
+      ...options.headers,
+      ...authHeaders
+    }
+  };
+  
+  let res = await fetch(url, requestOptions);
+  
+  // If we get a 401, try to refresh the token and retry once
+  if (res.status === 401) {
+    const refreshResult = await refreshToken();
+    if (refreshResult.success) {
+      // Retry with new token
+      const newAuthHeaders = getAuthHeaders();
+      requestOptions.headers = {
+        ...options.headers,
+        ...newAuthHeaders
+      };
+      res = await fetch(url, requestOptions);
+    } else {
+      // Refresh failed, clear session
+      clearSession();
+      throw new Error('Session expired. Please log in again.');
+    }
+  }
+  
+  return res;
 }

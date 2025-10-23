@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import './Local.css';
 import DOMPurify from 'dompurify';
 
-import { fetchLocalLegislation, addLocalLegislation, addVote, addOpinion, getUserVotes, getUserOpinions, getAISummary, validateToken, refreshToken } from '../api';
+import { fetchLocalLegislation, addLocalLegislation, addVote, addOpinion, getUserVotes, getUserOpinions, getAISummary, validateToken, refreshToken, clearSession } from '../api';
 
 const DEFAULT_ZIPCODE = '48067';
 
@@ -25,6 +26,8 @@ const categoryOptions = [
 ];
 
 const Local = () => {
+  const navigate = useNavigate();
+  
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -88,13 +91,10 @@ const Local = () => {
   };
 
   const clearAuth = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userState');
-    localStorage.removeItem('userPreferences');
+    clearSession();
     setIsAuthenticated(false);
     setCurrentUser(null);
+    navigate('/');
   };
 
   // Content sanitization helper

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import './State.css';
 import DOMPurify from 'dompurify';
 
-import { fetchStateLegislation, addVote, addOpinion, getUserVotes, getUserOpinions, getAISummary, validateToken, refreshToken } from '../api';
+import { fetchStateLegislation, addVote, addOpinion, getUserVotes, getUserOpinions, getAISummary, validateToken, refreshToken, clearSession } from '../api';
 
 
 // You may want to get the user's state from props, context, or user profile. For demo, default to 'CA'.
@@ -27,6 +28,8 @@ const categoryOptions = [
 ];
 
 const State = () => {
+  const navigate = useNavigate();
+  
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
@@ -82,13 +85,10 @@ const State = () => {
   };
 
   const clearAuth = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userState');
-    localStorage.removeItem('userPreferences');
+    clearSession();
     setIsAuthenticated(false);
     setCurrentUser(null);
+    navigate('/');
   };
 
   // Content sanitization helper

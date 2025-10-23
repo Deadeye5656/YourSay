@@ -11,6 +11,7 @@ import Local from './components/Local';
 import State from './components/State';
 import Federal from './components/Federal';
 import React, { useState, useEffect } from 'react';
+import { isSessionValid, clearSession } from './api';
 
 function App() {
   const navigate = useNavigate();
@@ -20,9 +21,18 @@ function App() {
   useEffect(() => {
     const authState = localStorage.getItem('isAuthenticated');
     if (authState === 'true') {
-      setIsAuthenticated(true);
+      // Validate that required tokens exist
+      if (isSessionValid()) {
+        setIsAuthenticated(true);
+      } else {
+        // Session is invalid, clear everything and log out
+        clearSession();
+        setIsAuthenticated(false);
+        // Redirect to home page
+        navigate('/');
+      }
     }
-  }, []);
+  }, [navigate]);
 
   const handleLogin = () => {
     navigate('/login');
@@ -44,12 +54,8 @@ function App() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    // Clear all user data from localStorage
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userZipcode');
-    localStorage.removeItem('userState');
-    localStorage.removeItem('userPreferences');
+    // Clear all user data from localStorage using the centralized function
+    clearSession();
     navigate('/');
   };
 
