@@ -11,7 +11,7 @@ import Local from './components/Local';
 import State from './components/State';
 import Federal from './components/Federal';
 import React, { useState, useEffect } from 'react';
-import { isSessionValid, clearSession } from './api';
+import { isSessionValid, clearSession, setLogoutHandler } from './api';
 
 function App() {
   const navigate = useNavigate();
@@ -33,6 +33,13 @@ function App() {
       }
     }
   }, [navigate]);
+
+  // Register global logout handler for API calls
+  useEffect(() => {
+    setLogoutHandler(() => {
+      handleLogout();
+    });
+  }, []);
 
   const handleLogin = () => {
     navigate('/login');

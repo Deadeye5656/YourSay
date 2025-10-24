@@ -1,5 +1,18 @@
 const BASE_URL = "https://yoursay-16cb.onrender.com";
 
+// Global logout handler - will be set by App.jsx
+let globalLogoutHandler = null;
+
+export function setLogoutHandler(handler) {
+  globalLogoutHandler = handler;
+}
+
+function triggerLogout() {
+  if (globalLogoutHandler) {
+    globalLogoutHandler();
+  }
+}
+
 export async function signupUser(data) {
   const res = await fetch(`${BASE_URL}/api/users`, {
     method: "POST",
@@ -94,8 +107,6 @@ export async function updatePreferences(data) {
   // Return a consistent object format
   if (res.ok) {
     return { success: true, message: responseText };
-  } else if (res.status === 401 || res.status === 403) {
-    return { success: false, message: "Authentication required", authError: true };
   } else {
     return { success: false, message: responseText };
   }
@@ -103,41 +114,21 @@ export async function updatePreferences(data) {
 
 export async function fetchLocalLegislation(zipcode) {
   let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/local/${zipcode}`);
-  
-  if (res.status === 401 || res.status === 403) {
-    throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
-  }
-  
   return res.json();
 }
 
 export async function fetchStateLegislation(state) {
   let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/state/${state}`);
-  
-  if (res.status === 401 || res.status === 403) {
-    throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
-  }
-  
   return res.json();
 }
 
 export async function fetchFederalLegislation() {
   let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/federal`);
-  
-  if (res.status === 401 || res.status === 403) {
-    throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
-  }
-  
   return res.json();
 }
 
 export async function fetchRandomLegislation(zipcode, state) {
   let res = await makeAuthenticatedRequest(`${BASE_URL}/api/legislation/random/${zipcode}/${state}`);
-  
-  if (res.status === 401 || res.status === 403) {
-    throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
-  }
-  
   return res.json();
 }
 
@@ -149,11 +140,6 @@ export async function addLocalLegislation(data) {
     },
     body: JSON.stringify(data),
   });
-  
-  if (res.status === 401 || res.status === 403) {
-    throw new Error(`Authentication required: ${res.status} ${res.statusText}`);
-  }
-  
   return res.json();
 }
 
@@ -171,8 +157,6 @@ export async function addVote(data) {
   if (res.ok) {
     const result = await res.json();
     return { success: true, result };
-  } else if (res.status === 401 || res.status === 403) {
-    return { success: false, message: "Authentication required", authError: true };
   } else {
     const errorText = await res.text();
     return { success: false, message: errorText };
@@ -193,8 +177,6 @@ export async function addOpinion(data) {
   if (res.ok) {
     const result = await res.json();
     return { success: true, result };
-  } else if (res.status === 401 || res.status === 403) {
-    return { success: false, message: "Authentication required", authError: true };
   } else {
     const errorText = await res.text();
     return { success: false, message: errorText };
@@ -209,8 +191,6 @@ export async function getUserVotes(email) {
   if (res.ok) {
     const votes = await res.json();
     return { success: true, votes };
-  } else if (res.status === 401 || res.status === 403) {
-    return { success: false, message: "Authentication required", authError: true };
   } else {
     const errorText = await res.text();
     return { success: false, message: errorText };
@@ -225,8 +205,6 @@ export async function getUserOpinions(email) {
   if (res.ok) {
     const opinions = await res.json();
     return { success: true, opinions };
-  } else if (res.status === 401 || res.status === 403) {
-    return { success: false, message: "Authentication required", authError: true };
   } else {
     const errorText = await res.text();
     return { success: false, message: errorText };
@@ -252,8 +230,6 @@ export async function getAISummary(state, billId, title) {
   if (res.ok) {
     const summary = await res.text();
     return { success: true, summary };
-  } else if (res.status === 401 || res.status === 403) {
-    return { success: false, message: "Authentication required", authError: true };
   } else {
     const errorText = await res.text();
     return { success: false, message: errorText };
@@ -371,6 +347,7 @@ export async function makeAuthenticatedRequest(url, options = {}) {
   // Check if session is valid before making request
   if (!isSessionValid()) {
     clearSession();
+    triggerLogout();
     throw new Error('Session expired. Please log in again.');
   }
   
@@ -396,11 +373,24 @@ export async function makeAuthenticatedRequest(url, options = {}) {
         ...newAuthHeaders
       };
       res = await fetch(url, requestOptions);
+      
+      // If still 401 after refresh, trigger logout
+      if (res.status === 401 || res.status === 403) {
+        clearSession();
+        triggerLogout();
+        throw new Error('Authentication failed. Please log in again.');
+      }
     } else {
-      // Refresh failed, clear session
+      // Refresh failed, clear session and logout
       clearSession();
+      triggerLogout();
       throw new Error('Session expired. Please log in again.');
     }
+  } else if (res.status === 403) {
+    // 403 means forbidden - trigger logout
+    clearSession();
+    triggerLogout();
+    throw new Error('Access forbidden. Please log in again.');
   }
   
   return res;
