@@ -4,7 +4,7 @@ import './Navbar.css';
 const Navbar = ({ onLogin, onSignup, onLogout, isAuthenticated, onNavigate }) => {
   return (
     <nav className="navbar">
-      <div className="navbar__logo">
+      <div className="navbar__logo" onClick={() => onNavigate('/')} style={{ cursor: 'pointer' }}>
         <span className="logo-your">Your</span>
         <span className="logo-say">Say</span>
         <div className="logo-underline"></div>

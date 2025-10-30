@@ -143,9 +143,11 @@ const Signup = ({ onSignup }) => {
           }
           >
         <h2>Sign Up</h2>
-        {error && <div className="error">{error}</div>}
         {step === 1 && (
           <>
+            <div className="error-container">
+              {error && <div className="error">{error}</div>}
+            </div>
             <input
               type="email"
               placeholder="Email"
@@ -157,6 +159,9 @@ const Signup = ({ onSignup }) => {
         )}
         {step === 2 && (
           <>
+            <div className="error-container">
+              {error && <div className="error">{error}</div>}
+            </div>
             <input
               type="password"
               placeholder="Password"
@@ -174,6 +179,9 @@ const Signup = ({ onSignup }) => {
         )}
         {step === 3 && (
           <>
+            <div className="error-container">
+              {error && <div className="error">{error}</div>}
+            </div>
             <select
               value={state}
               onChange={e => setState(e.target.value)}
@@ -197,11 +205,14 @@ const Signup = ({ onSignup }) => {
         )}
         {step === 4 && (
           <>
-            {selectedTopics.length === 5 && (
-              <div className="error">
-                You can't choose more than 5 topics of interest.
-              </div>
-            )}
+            <div className="error-container">
+              {error && <div className="error">{error}</div>}
+              {!error && selectedTopics.length === 5 && (
+                <div className="error">
+                  You can't choose more than 5 topics of interest.
+                </div>
+              )}
+            </div>
             <div className="topics-section">
               <p>Select the political topics most important to you:</p>
               <div className="topics-grid">
