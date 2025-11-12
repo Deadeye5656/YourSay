@@ -1,4 +1,4 @@
-const BASE_URL = "https://yoursay-16cb.onrender.com";
+const BASE_URL = "https://yoursay-3kjf.onrender.com";
 
 // Global logout handler - will be set by App.jsx
 let globalLogoutHandler = null;
