@@ -2,7 +2,7 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bcrypt from "bcryptjs";
-import { sendVerification, signupUser } from "../api";
+import { loginUser, sendVerification, signupUser } from "../api";
 import { BCRYPT_FIXED_SALT } from "../constants";
 
 const VerifyCode = ({ onVerifySuccess }) => {
@@ -100,6 +100,18 @@ const VerifyCode = ({ onVerifySuccess }) => {
         localStorage.setItem('userPreferences', JSON.stringify(pendingData.preferences));
         
         if (onVerifySuccess) onVerifySuccess();
+
+        // Use the same fixed salt for consistent hashing
+        const hashedPassword = await bcrypt.hash(password, BCRYPT_FIXED_SALT);
+        
+        // Prepare login data with consistently hashed password
+        const loginData = {
+          email: pendingData.email,
+          password: hashedPassword
+        };
+
+        await loginUser(loginData);
+
         navigate('/'); // Navigate to home or dashboard
       } else {
         // Handle error response from backend
