@@ -323,6 +323,7 @@ const Local = () => {
 
   // Handle AI summary request
   const handleAISummary = async () => {
+    console.log('Local handleAISummary invoked', { modalData });
     if (!modalData) return;
     
     setAiLoading(true);
@@ -337,7 +338,9 @@ const Local = () => {
       const billId = modalData.bill_id || modalData.id;
       const title = modalData.title;
 
+      console.log('Local requesting AI summary', { userState, billId, title });
       const result = await getAISummary(userState, billId, title);
+      console.log('Local AI summary result', result);
       if (result.success) {
         setAiSummary(result.summary);
         setAiLoading(false);

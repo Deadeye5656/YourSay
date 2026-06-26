@@ -312,6 +312,7 @@ const Federal = () => {
 
   // Handle AI summary request
   const handleAISummary = async () => {
+    console.log('Federal handleAISummary invoked', { modalData });
     if (!modalData) return;
     
     setAiLoading(true);
@@ -326,7 +327,9 @@ const Federal = () => {
       const billId = modalData.bill_id || modalData.id;
       const title = modalData.title;
 
+      console.log('Federal requesting AI summary', { userState, billId, title });
       const result = await getAISummary(userState, billId, title);
+      console.log('Federal AI summary result', result);
       if (result.success) {
         setAiSummary(result.summary);
         setAiLoading(false);
