@@ -52,6 +52,11 @@ export async function loginUser(data) {
     if (loginResponse.refreshToken) {
       localStorage.setItem('refreshToken', loginResponse.refreshToken);
     }
+
+    console.log('Stored login tokens in localStorage:', {
+      authToken: !!localStorage.getItem('authToken'),
+      refreshToken: !!localStorage.getItem('refreshToken')
+    });
     
     // Return the response with success flag based on accessGranted
     return { 
@@ -347,13 +352,11 @@ export async function makeAuthenticatedRequest(url, options = {}) {
 
   // Check if session is valid before making request
   if (!isSessionValid()) {
-    console.warn('Session invalid before request, forcing logout', {
+    console.warn('Session invalid before request, not clearing tokens yet', {
       url,
       hasAuthToken: !!authToken,
       hasRefreshToken: !!refreshToken
     });
-    clearSession();
-    triggerLogout();
     throw new Error('Session expired. Please log in again.');
   }
   
