@@ -304,18 +304,9 @@ export function getAuthHeaders() {
 export function isSessionValid() {
   const authToken = localStorage.getItem('authToken');
   const refreshToken = localStorage.getItem('refreshToken');
-  const userEmail = localStorage.getItem('userEmail');
-  const userZipcode = localStorage.getItem('userZipcode');
-  const userState = localStorage.getItem('userState');
-  const userPreferences = localStorage.getItem('userPreferences');
   
   // If no tokens, session is invalid
   if (!authToken && !refreshToken) {
-    return false;
-  }
-  
-  // If missing any required user data, session is invalid
-  if (!userEmail || !userZipcode || !userState || !userPreferences) {
     return false;
   }
   
