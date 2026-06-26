@@ -53,6 +53,21 @@ export async function loginUser(data) {
       localStorage.setItem('refreshToken', loginResponse.refreshToken);
     }
     
+    // Log user fields and token presence returned from backend for debugging
+    console.log("Login response fields:", {
+      accessGranted: loginResponse.accessGranted,
+      email: loginResponse.email,
+      zipcode: loginResponse.zipcode,
+      state: loginResponse.state,
+      preferences: loginResponse.preferences,
+      accessToken: !!loginResponse.accessToken,
+      refreshToken: !!loginResponse.refreshToken
+    });
+    console.log("Login tokens:", {
+      accessToken: loginResponse.accessToken,
+      refreshToken: loginResponse.refreshToken
+    });
+    
     // Return the response with success flag based on accessGranted
     return { 
       success: loginResponse.accessGranted, 
@@ -66,7 +81,13 @@ export async function loginUser(data) {
       accessToken: loginResponse.accessToken
     };
   } else {
-    return { success: false, isAuthenticated: false, message: "Login failed" };
+    const errorText = await res.text();
+    console.error("Login failed response:", {
+      status: res.status,
+      statusText: res.statusText,
+      body: errorText
+    });
+    return { success: false, isAuthenticated: false, message: errorText || "Login failed" };
   }
 }
 
