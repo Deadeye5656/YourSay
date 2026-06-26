@@ -336,8 +336,22 @@ export function validateAndClearSession() {
 
 // Helper function to make authenticated API calls with automatic token refresh
 export async function makeAuthenticatedRequest(url, options = {}) {
+  const authToken = localStorage.getItem('authToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  console.log('makeAuthenticatedRequest start', {
+    url,
+    hasAuthToken: !!authToken,
+    hasRefreshToken: !!refreshToken,
+    sessionValid: isSessionValid()
+  });
+
   // Check if session is valid before making request
   if (!isSessionValid()) {
+    console.warn('Session invalid before request, forcing logout', {
+      url,
+      hasAuthToken: !!authToken,
+      hasRefreshToken: !!refreshToken
+    });
     clearSession();
     triggerLogout();
     throw new Error('Session expired. Please log in again.');
