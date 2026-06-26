@@ -218,7 +218,9 @@ export async function getUserOpinions(email) {
 }
 
 export async function getAISummary(state, billId, title) {
-  console.log("Fetching AI summary for:", { state, billId, title });
+  const authToken = localStorage.getItem('authToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+  console.log("Fetching AI summary for:", { state, billId, title, hasAuthToken: !!authToken, hasRefreshToken: !!refreshToken });
   const requestBody = {
     state: state,
     bill_id: billId.toString(),
