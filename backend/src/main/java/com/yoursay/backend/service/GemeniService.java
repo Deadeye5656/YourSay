@@ -20,7 +20,7 @@ public class GemeniService {
 
         GenerateContentResponse response =
                 client.models.generateContent(
-                        "gemini-2.5-pro",
+                        "gemini-3.1-flash-lite",
                         prompt,
                         GenerateContentConfig.builder().build());
 
