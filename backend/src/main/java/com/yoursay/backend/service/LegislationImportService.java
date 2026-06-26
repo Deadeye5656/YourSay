@@ -34,17 +34,17 @@ public class LegislationImportService {
             "Centennial", "centennial", "Centenary", "centenary", "Bicentennial", "bicentennial", "Bicentenary", "bicentenary",
             "commemorate", "Commemorate", "commemoration", "Commemoration", "Memorializing", "memorializing", "Memorialize", "memorialize");
 
-//    private List<String> stateAbbreviations = List.of(
-//            "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
-//            "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
-//            "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
-//            "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
-//            "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "US", "DC"
-//    );
-
     private List<String> stateAbbreviations = List.of(
-            "MI", "US"
+            "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+            "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+            "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+            "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+            "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY", "US", "DC"
     );
+
+//    private List<String> stateAbbreviations = List.of(
+//            "MI", "US"
+//    );
 
     public LegislationImportService(LegislationRepository legislationRepository) {
         this.legislationRepository = legislationRepository;
